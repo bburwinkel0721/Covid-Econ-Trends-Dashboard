@@ -105,13 +105,13 @@ legend.onAdd = function (map) {
 legend.addTo(map);
 
 d3.select('#title')
-      .style('background-color', 'yellow')
+      .style('background-color', 'rgb(0, 119, 190)')
       .style("box-shadow", "10px 10px 5px grey")
       .style("border", "1px solid black")
       .style("border-radius", "15px");
 
 d3.select('#map')
-      .style('background-color', 'red')
+      .style('background-color', 'white')
       .style("box-shadow", "10px 10px 5px grey")
       .style("border", "1px solid black")
       .style("border-radius", "15px");
