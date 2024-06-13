@@ -1,190 +1,104 @@
-// Store our API endpoint as queryUrl.
-let apiKey = 'e6a29efb-49fe-42d1-922a-2298ab577236'
-let queryUrl =
-  `https://publicapi.ohgo.com/api/v1/construction?region=central-ohio&api-key=${apiKey}`;
+var map = L.map('map').setView([37.8, -96], 4);
 
-// Build the metadata panel
-function buildMetadata(sample) {
-    d3.json(queryUrl).then((data) => {
-    
-    //   // get the metadata field
-    //   const metaDataField = data.metadata
-  
-    //   // Filter the metadata for the object with the desired sample number
-    //   let desiredSample = metaDataField.filter(object => object.id == sample)
-      
-      // Use d3 to select the panel with id of `#sample-metadata`
-      let panel = d3.select('#sample-metadata')
-  
-      // Use `.html("") to clear any existing metadata
-      panel.html("")
-  
-      // Inside a loop, you will need to use d3 to append new
-      // tags for each key-value in the filtered metadata.
-    //   desiredSample.forEach(item => {
-    //     Object.entries(item).forEach(([key, value]) => {
-    //         panel.append("p")
-    //             .text(`${key.toUpperCase()}: ${value}`)
-    //             .style('opacity', 0)
-    //             .transition()
-    //             .duration(500)
-    //             .style('opacity', 1);
-    //     });
-    //   });
+var geojson;
+
+var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+function getColor(d) {
+    return d > 1000 ? '#800026' :
+           d > 500  ? '#BD0026' :
+           d > 200  ? '#E31A1C' :
+           d > 100  ? '#FC4E2A' :
+           d > 50   ? '#FD8D3C' :
+           d > 20   ? '#FEB24C' :
+           d > 10   ? '#FED976' :
+                      '#FFEDA0';
+}
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.density),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
     });
-  }
-  
-  // function to build both charts
-  function buildCharts(sample) {
-    d3.json(queryUrl).then((data) => {
-      let newData = data.results
 
-  
+    layer.bringToFront();
+    info.update(layer.feature.properties);
+}
 
-      // Build a Bar Chart
-      // Don't forget to slice and reverse the input data appropriately
-      let trace2 = {
-        x: [1,2,3,4],
-        y: [2,4,8,16],
-        type: 'bar',
-        orientation: "h",
-        text: 'something',
-        marker: {
-          color: 'red'
-        }
-      }
-  
-      // Perpare bar data for plotting
-      let barData = [trace2]
-  
-      // Perpare layout for plotting
-      let layout2 = {
-        title: 'Something',
-        xaxis: {
-          title: 'Numbers'
-        }
-      }
-  
-      // Render the Bar Chart
-      Plotly.newPlot('bar1', barData, layout2)
+function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+    info.update();
+}
 
-      let trace3 = {
-        x: [1,2,3,4],
-        y: [2,4,8,16],
-        type: 'bar',
-        orientation: "h",
-        text: 'something',
-        marker: {
-          color: 'blue'
-        }
-      }
-      // Perpare bar data for plotting
-      let barData2 = [trace3]
-  
-      // Perpare layout for plotting
-      let layout3 = {
-        title: 'Something',
-        xaxis: {
-          title: 'Numbers'
-        }
-      }
-  
-      // Render the Bar Chart
-      Plotly.newPlot('bar2', barData2, layout3)
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+}
 
-      // Create the base layers.
-  let street = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+}
+
+
+
+geojson = L.geoJson(statesData, {
+    style: style,
+    onEachFeature: onEachFeature
+}).addTo(map);
+
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+
+// method that we will use to update the control based on feature properties passed
+info.update = function (props) {
+    this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
+        '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+        : 'Hover over a state');
+};
+
+info.addTo(map);
+
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
     }
-  );
 
-  // Create a baseMaps object.
-  let baseMaps = {
-    "Street Map": street
-  };
+    return div;
+};
 
-  // Create the marker layer.
-  let markerArray = newData.map((data) => {
-    let lat = data.latitude;
-    let lon = data.longitude;
-    let place = L.circle([lat, lon], {
-      color: 'red',
-      fillColor: 'red',
-      stroke: false,
-      fillOpacity: 0.5,
-      radius: 500,
-    });
-
-    return place;
-  });
-
-  // Create a layer group 
-  const markerLayer = L.layerGroup(markerArray);
-
-  // Create map overlay
-  const overlayMaps = {
-    Construction: markerLayer,
-    
-  };
-
-  // Create a new map.
-  let myMap = L.map("map", {
-    center: [39.822612, -82.956138],
-    zoom: 9,
-    layers: [street, markerLayer],
-  });
-
-  // Create a layer control that contains our baseMaps.
-  let layerControl = L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false,
-  });
-  layerControl.addTo(myMap);
-    });
-  }
-  
-  // Function to run on page load
-  function init() {
-    d3.json(queryUrl).then((data) => {
-        console.log(data.results)
-      // Get the names field
-      const namesField = [
-        "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", 
-        "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", 
-        "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", 
-        "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
-        "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", 
-        "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
-    ]
-  
-      // Use d3 to select the dropdown with id of `#selDataset`
-      let dropdownMenu = d3.select("#selDataset")
-  
-      // Use the list of sample names to populate the select options
-      dropdownMenu.selectAll("option")
-          .data(namesField)
-          .enter()
-          .append("option")
-          .text(d => d)
-          .attr("value", d => d);
-  
-      // Get the first sample from the list
-      const firstName = namesField[0]
-
-      buildMetadata(firstName)
-      buildCharts(firstName)
-    });
-  }
-
-  
-  // Function for event listener
-  function optionChanged(newSample) {
-    buildMetadata(newSample);
-    buildCharts(newSample);
-  }
-
-  // Initialize the dashboard
-  init();
-  
+legend.addTo(map);
