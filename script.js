@@ -17,6 +17,7 @@ function getColor(d) {
            d > 10   ? '#FED976' :
                       '#FFEDA0';
 }
+
 function style(feature) {
     return {
         fillColor: getColor(feature.properties.density),
@@ -76,7 +77,7 @@ info.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
-    this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
+    this._div.innerHTML = '<h4>US Map</h4>' +  (props ?
         '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
         : 'Hover over a state');
 };
@@ -102,3 +103,15 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
+
+d3.select('#title')
+      .style('background-color', 'yellow')
+      .style("box-shadow", "10px 10px 5px grey")
+      .style("border", "1px solid black")
+      .style("border-radius", "15px");
+
+d3.select('#map')
+      .style('background-color', 'red')
+      .style("box-shadow", "10px 10px 5px grey")
+      .style("border", "1px solid black")
+      .style("border-radius", "15px");
