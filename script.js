@@ -2,6 +2,8 @@ var map = L.map('map').setView([37.8, -96], 4);
 
 var geojson;
 
+var geojson2;
+
 var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -61,6 +63,7 @@ function onEachFeature(feature, layer) {
 }
 
 
+geojson2 = L.geoJson(usCounties).addTo(map);
 
 geojson = L.geoJson(statesData, {
     style: style,
@@ -83,6 +86,21 @@ info.update = function (props) {
 };
 
 info.addTo(map);
+
+let baseMaps = {
+    "Street Map": tiles
+  };
+
+const overlayMaps = {
+    States: geojson,
+    Counties: geojson2,
+  };
+
+  // Create a layer control that contains our baseMaps.
+let layerControl = L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false,
+});
+layerControl.addTo(map);
 
 var legend = L.control({position: 'bottomright'});
 
