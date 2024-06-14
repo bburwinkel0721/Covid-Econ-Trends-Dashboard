@@ -31,6 +31,18 @@ function style(feature) {
     };
 }
 
+function style2(feature) {
+    return {
+        fillColor: 'white',
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+
 function highlightFeature(e) {
     var layer = e.target;
 
@@ -60,15 +72,34 @@ function onEachFeature(feature, layer) {
         mouseout: resetHighlight,
         click: zoomToFeature
     });
+
+    layer.bindPopup('<h4>' + feature.properties.name + '</h4>' +
+                    '<p>Density: ' + feature.properties.density + ' people / mi<sup>2</sup></p>');
+}
+
+function onEachFeature2(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+
+    layer.bindPopup('<h4>' + feature.properties.NAME + '</h4>' +
+                    '<p>Census Area: ' + feature.properties.CENSUSAREA + ' people / mi<sup>2</sup></p>');
 }
 
 
-geojson2 = L.geoJson(usCounties).addTo(map);
+
+geojson2 = L.geoJson(usCounties, {
+    style: style,
+    onEachFeature: onEachFeature2
+}).addTo(map);
 
 geojson = L.geoJson(statesData, {
     style: style,
     onEachFeature: onEachFeature
 }).addTo(map);
+
 
 var info = L.control();
 
