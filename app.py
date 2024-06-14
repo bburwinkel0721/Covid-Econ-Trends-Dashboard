@@ -13,9 +13,9 @@ from flask_cors import CORS
 # Create an instance of MongoClient
 mongo = MongoClient(port=27017)
 
-tester_db = mongo.tester
+us_states_db = mongo.us_states_db
 
-construction = tester_db['construction']
+states = us_states_db['states']
 
 ################################################
 # Flask Setup
@@ -38,18 +38,21 @@ def home_route():
         f"<br/>" 
         f"Here are the Available Routes:<br/>"
         f"<br/>"
-        f"/api/v1.0/active_construction<br/>"
+        f"/api/v1.0/states<br/>"
     )
 
 # Route for our precipitation data
-@app.route("/api/v1.0/active_construction")
+@app.route("/api/v1.0/states")
 def precipitation_route():
     data = []
-    records = construction.find()
+    records = states.find()
     for record in records:
         record['_id'] = str(record['_id'])
         data.append(record)
-    return jsonify(data)
+    dic = {
+    "features": data,
+    "type": "FeatureCollection"}
+    return dic
 
 # Runs the app
 if __name__ == "__main__":
