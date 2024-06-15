@@ -280,19 +280,19 @@ d3.json(stateUrl).then(data =>{
         x: ['Oct 2019', 'Nov 2019', 'Dec 2019', 'Jan 2020', 'Feb 2020', 'Mar 2020'],
         y: [500, 1500, 3000, 2500, 2000, 4500],
         type: 'bar',
-        name: 'Outpatients'
+        name: 'Covid Cases'
     }, {
         x: ['Oct 2019', 'Nov 2019', 'Dec 2019', 'Jan 2020', 'Feb 2020', 'Mar 2020'],
         y: [200, 800, 1200, 900, 500, 1000],
         type: 'bar',
-        name: 'Inpatients'
+        name: 'GDP'
     }], {
         barmode: 'group'
     });
 
     Plotly.newPlot('chart2', [{
-        x: ['07 am', '08 am', '09 am', '10 am', '11 am', '12 pm'],
-        y: [50, 113, 70, 80, 90, 60],
+        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        y: [4.0, 4.1, 4.2, 4.3, 4.5, 4.6, 4.8, 5.0, 5.1, 5.3, 5.4, 5.5],
         type: 'line'
     }]);
 
