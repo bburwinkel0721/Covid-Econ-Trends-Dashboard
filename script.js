@@ -122,28 +122,51 @@ function buildStatedata(sample) {
     let desiredSample = metaDataField.filter(object => object.properties.name == sample)
     
     // Use d3 to select the panel with id of `#sample-metadata`
-    let panel = d3.select('#sample-metadata')
+    let panel = d3.select('#sample-metadata1')
+    let panel2 = d3.select('#sample-metadata2')
+    let panel3 = d3.select('#sample-metadata3')
+    let panel4 = d3.select('#sample-metadata4')
 
     // Use `.html("") to clear any existing metadata
     panel.html("")
+    panel2.html("")
+    panel3.html("")
+    panel4.html("")
+    
+    factList =[]
+    let newThing = Object.entries(desiredSample[0].properties)
+    newThing.forEach(([key, value]) => {
+        factList.push(key)
+        factList.push(value)
+    })
+    panel.append("p")
+        .text(`${factList[1]}`)
+        .style('opacity', 0)
+        .transition()
+        .duration(500)
+        .style('opacity', 1);
+    
+    panel2.append("p")
+        .text(`${factList[3]}`)
+        .style('opacity', 0)
+        .transition()
+        .duration(500)
+        .style('opacity', 1);
 
-    let newThing = desiredSample[0].properties
-
-    Object.entries(newThing).forEach(([key, value]) => {
-            panel.append("p")
-                .text(`${key.toUpperCase()}: ${value}`)
-                .style('opacity', 0)
-                .transition()
-                .duration(500)
-                .style('opacity', 1);
-        });
+    // Object.entries(newThing).forEach(([key, value]) => {
+    //         panel.append("p")
+    //             .text(`${key}: ${value}`)
+    //             .style('opacity', 0)
+    //             .transition()
+    //             .duration(500)
+    //             .style('opacity', 1);
+    //     });
       });
     
   }
 
   function init() {
     d3.json(stateUrl).then((data) => {
-      console.log(data)
       // Get the names field
       const namesField = []
       for (state of data.features){
@@ -253,17 +276,25 @@ d3.json(stateUrl).then(data =>{
     let idPanel = d3.select('.card')
     idPanel.transition().duration(500)
 
-    // Styling for the demographic info header
-    let panelHeader = d3.select('.card-header')
-    panelHeader.transition().duration(500)
-        .style('background-color', 'green')
-        .style("border-radius", "15px");
+    Plotly.newPlot('chart1', [{
+        x: ['Oct 2019', 'Nov 2019', 'Dec 2019', 'Jan 2020', 'Feb 2020', 'Mar 2020'],
+        y: [500, 1500, 3000, 2500, 2000, 4500],
+        type: 'bar',
+        name: 'Outpatients'
+    }, {
+        x: ['Oct 2019', 'Nov 2019', 'Dec 2019', 'Jan 2020', 'Feb 2020', 'Mar 2020'],
+        y: [200, 800, 1200, 900, 500, 1000],
+        type: 'bar',
+        name: 'Inpatients'
+    }], {
+        barmode: 'group'
+    });
 
-    // Styling for the demographic info metadata block
-    let metaBlock = d3.select('.card-primary')
-    metaBlock.transition().duration(500)
-        .style("box-shadow", "10px 10px 5px grey")
-        .style("border", "1px solid black")
-        .style("border-radius", "15px");
+    Plotly.newPlot('chart2', [{
+        x: ['07 am', '08 am', '09 am', '10 am', '11 am', '12 pm'],
+        y: [50, 113, 70, 80, 90, 60],
+        type: 'line'
+    }]);
+
 })
 
