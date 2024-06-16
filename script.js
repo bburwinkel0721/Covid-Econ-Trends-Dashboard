@@ -104,8 +104,8 @@ function onEachFeature(feature, layer) {
     });
 
     layer.bindPopup('<h4>' + feature.properties.name + '</h4>' +
-                    '<p>Density: ' + feature.properties.density + ' people / mi<sup>2</sup></p>'+
-                    '<p>Population: ' + feature.properties.Population + ' people </p>');
+                    '<p>Popultion Density: ' + feature.properties.density + '</p>'+
+                    '<p>Total Covid Cases: ' +  ' people </p>');
 }
 
 // Applies the functions to the counties layer
@@ -174,9 +174,13 @@ function buildStatedata(state, year) {
     }
     buildCharts(unemploymentRatesByMonth)
     
-    
+    const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    // Calculate the average
+    const average = sum / unemploymentRatesByMonth.length;
+
     panel2.append("p")
-        .text(`${propertiesList[2]}`)
+        .text(`${average.toFixed(1)}%`)
         .style('opacity', 0)
         .transition()
         .duration(500)
@@ -283,7 +287,7 @@ d3.json(stateUrl).then(data =>{
             // method that we will use to update the control based on feature properties passed
             info.update2 = function (name) {
                 this._div.innerHTML = '<h4>US Map</h4>' +  (name ?
-                    '<b>' + name + '</b><br />' + name + ' people / mi<sup>2</sup>'
+                    '<b>' + name + '</b><br />'
                     : 'Hover over a county');
                 };
                 
