@@ -17,9 +17,9 @@ us_states_db = mongo.us_states_db
 
 states = us_states_db['states']
 
-# counties = us_states_db['counties']
+counties = us_states_db['counties']
 
-# state_ids = us_states_db['state_ids']
+series_ids = us_states_db['series_ids']
 
 ################################################
 # Flask Setup
@@ -43,6 +43,10 @@ def home_route():
         f"Here are the Available Routes:<br/>"
         f"<br/>"
         f"/api/v1.0/states<br/>"
+        f"<br/>"
+        f"/api/v1.0/counties<br/>"
+        f"<br/>"
+        f"/api/v1.0/series_ids<br/>"
     )
 
 # Route for our state data
@@ -58,30 +62,30 @@ def state_route():
     "type": "FeatureCollection"}
     return dic
 
-# # Route for our county data
-# @app.route("/api/v1.0/counties")
-# def counties_route():
-#     data = []
-#     records = counties.find()
-#     for record in records:
-#         record['_id'] = str(record['_id'])
-#         data.append(record)
-#     dic = {
-#     "features": data,
-#     "type": "FeatureCollection"}
-#     return dic
+# Route for our county data
+@app.route("/api/v1.0/counties")
+def counties_route():
+    data = []
+    records = counties.find()
+    for record in records:
+        record['_id'] = str(record['_id'])
+        data.append(record)
+    dic = {
+    "features": data,
+    "type": "FeatureCollection"}
+    return dic
 
-# # Route for our state ids data
-# @app.route("/api/v1.0/state_ids")
-# def counties_route():
-#     data = []
-#     records = state_ids.find()
-#     for record in records:
-#         record['_id'] = str(record['_id'])
-#         data.append(record)
-#     dic = {
-#     "features": data}
-#     return dic
+# Route for our state ids data
+@app.route("/api/v1.0/series_ids")
+def series_route():
+    data = []
+    records = series_ids.find()
+    for record in records:
+        record['_id'] = str(record['_id'])
+        data.append(record)
+    dic = {
+    "features": data}
+    return dic
 
 # Runs the app
 if __name__ == "__main__":
