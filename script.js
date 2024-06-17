@@ -26,15 +26,30 @@ function getColor(d) {
 
 // Changes the map coloring based on population denstiny
 function getColor2(d) {
-    return d > 20000 ? '#800026' :
-           d > 15000  ? '#BD0026' :
-           d > 10000  ? '#E31A1C' :
-           d > 5000  ? '#FC4E2A' :
-           d > 3000   ? '#FD8D3C' :
-           d > 2000  ? '#FEB24C' :
-           d > 1000   ? '#FED976' :
-                      '#FFEDA0';
+    return d > 200000 ? '#800026' :
+           d > 150000 ? '#BD0026' :
+           d > 100000 ? '#E31A1C' :
+           d > 75000  ? '#FC4E2A' :
+           d > 50000  ? '#FD8D3C' :
+           d > 40000  ? '#FEB24C' :
+           d > 30000  ? '#FED976' :
+           d > 20000  ? '#FFEDA0' :
+           d > 15000  ? '#FFFFCC' :
+           d > 10000  ? '#E0F3F8' :
+           d > 7500   ? '#BAE4BC' :
+           d > 5000   ? '#7BCCC4' :
+                      '#43A2CA';
 }
+// function getColor2(d) {
+//     return d > 20000 ? '#800026' :
+//            d > 15000  ? '#BD0026' :
+//            d > 10000  ? '#E31A1C' :
+//            d > 5000  ? '#FC4E2A' :
+//            d > 3000   ? '#FD8D3C' :
+//            d > 2000  ? '#FEB24C' :
+//            d > 1000   ? '#FED976' :
+//                       '#FFEDA0';
+// }
 
 // Styles the states
 function style(feature) {
@@ -205,97 +220,103 @@ function buildStatedata(state, year) {
         
     }
 
-// Send unemployment data to be graphed
-buildCharts(unemploymentRatesByMonth)
+    // Send unemployment data to be graphed
+    buildCharts(unemploymentRatesByMonth)
 
-// Get the sum of the unemployment rates
-const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    // Get the sum of the unemployment rates
+    const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-// Calculate the unemployment average
-const average = sum / unemploymentRatesByMonth.length;
+    // Calculate the unemployment average
+    const average = sum / unemploymentRatesByMonth.length;
 
-// Add unemployment average to panel 2
-panel2.append("p")
-    .text(`${average.toFixed(1)}%`)
-    .style('opacity', 0)
-    .transition()
-    .duration(500)
-    .style('opacity', 1);
+    // Add unemployment average to panel 2
+    panel2.append("p")
+        .text(`${average.toFixed(1)}%`)
+        .style('opacity', 0)
+        .transition()
+        .duration(500)
+        .style('opacity', 1);
 
-// New Covid Cases data by year
-let newCovidCaseByMonth =[]
-for (let cases of propertiesList[0]){
-        if (cases.year == year){
-            newCovidCaseByMonth = cases['New Cases']
+    // New Covid Cases data by year
+    let newCovidCaseByMonth =[]
+    for (let cases of propertiesList[0]){
+            if (cases.year == year){
+                newCovidCaseByMonth = cases['New Cases']
+            }
         }
-    }
 
-// 
-buildCharts2(unemploymentRatesByMonth, newCovidCaseByMonth)
-    
-// Get the sum of the new coivd cases that year
-const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    // 
+    buildCharts2(unemploymentRatesByMonth, newCovidCaseByMonth)
+        
+    // Get the sum of the new coivd cases that year
+    const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-// Add Covid Cases total to panel 3
-panel3.append("p")
-    .text(`${sumCovidCases}`)
-    .style('opacity', 0)
-    .transition()
-    .duration(500)
-    .style('opacity', 1);
+    // Add Covid Cases total to panel 3
+    panel3.append("p")
+        .text(`${sumCovidCases}`)
+        .style('opacity', 0)
+        .transition()
+        .duration(500)
+        .style('opacity', 1);
 
-// New Covid Cases data by year
-let newCovidDeathsByMonth =[]
-for (let cases of propertiesList[1]){
-        if (cases.year == year){
-            newCovidDeathsByMonth = cases['New Deaths']
+
+    // New Covid Cases data by year
+    let newCovidDeathsByMonth =[]
+    for (let cases of propertiesList[1]){
+            if (cases.year == year){
+                newCovidDeathsByMonth = cases['New Deaths']
+            }
         }
-    }
 
-
-// Get the sum of the new coivd cases that year
-const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-// Add Covid deaths total to panel 4
-panel4.append("p")
-    .text(`${sumCovidDeaths}`)
-    .style('opacity', 0)
-    .transition()
-    .duration(500)
-    .style('opacity', 1);
-});
-
+    // Get the sum of the new coivd cases that year
+    const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     
-
+    buildCharts3(sumCovidCases,sumCovidDeaths)
+    // Add Covid deaths total to panel 4
+    panel4.append("p")
+        .text(`${sumCovidDeaths}`)
+        .style('opacity', 0)
+        .transition()
+        .duration(500)
+        .style('opacity', 1);
+    });
+        
 }
   
 // function for build charts
 function buildCharts(data){
-let yValues = data.reverse()
-Plotly.newPlot('chart2', [{
-    x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    y: yValues,
-    type: 'line'
-}]);
+    let yValues = data.reverse()
+    Plotly.newPlot('chart2', [{
+        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        y: yValues,
+        type: 'line'
+    }]);
 }
 
 function buildCharts2(data, covid){
-let yValues = data.reverse()
-Plotly.newPlot('chart1', [{
-    x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    y: covid,
-    type: 'bar',
-    name: 'Covid Cases'
-}, {
-    x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    y: yValues,
-    type: 'bar',
-    name: 'Unemployment'
-}], {
-    barmode: 'group'
+    let yValues = data.reverse()
+    Plotly.newPlot('chart1', [{
+        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        y: covid,
+        type: 'bar',
+        name: 'Covid Cases'
+    }, {
+        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        y: yValues,
+        type: 'bar',
+        name: 'Unemployment'
+    }], {
+        barmode: 'group'
 });
-
 }
+function buildCharts3(cases,deaths){
+    Plotly.newPlot('chart3', [{
+        values: [cases, deaths],
+        labels: ['Cases', 'Deaths'],
+        type: 'pie'
+    }]);
+}
+
   
 // initilize the dropdown menus
 function init() {
