@@ -21,26 +21,37 @@
     
   <div class="card small-card">
     <h1>Welcome to Our Dashboard</h1>
-    <h6>Choose Your State:</h6>
+    <h4>Choose Your State:</h4>
+    <br>
     <select id="selDataset" onchange="optionChangedState(this.value)"></select>
-    <h6>Choose Your Year:</h6>
+    <br>
+    <h4>Choose Your Year:</h4>
+    <br>
     <select id="selYear" onchange="optionChangedYear(this.value)"></select>
   </div>
-  <div class="card small-card">
-    <h3>Estimated Population that Year</h3>
+  <div class="card smallest-card metric">
+    <h6>Population Per Year</h6>
     <div id="sample-metadata1"></div>
   </div>
-  <div class="card small-card">
-    <h3>Average Unemployment Rate</h3>
+  <div class="card smallest-card metric">
+    <h6>Average Unemployment</h6>
     <div id="sample-metadata2"></div>
   </div>
-  <div class="card small-card">
-    <h3>Total Cases that Year</h3>
+  <div class="card smallest-card metric">
+    <h6>Covid Cases Per Year</h6>
     <div id="sample-metadata3"></div>
   </div>
-  <div class="card small-card">
-    <h3>Total Covid Deaths that Year</h3>
+  <div class="card smallest-card metric">
+    <h6>Covid Deaths Per Year</h6>
     <div id="sample-metadata4"></div>
+  </div>
+  <div class="card smallest-card metric">
+    <h6>Average GDP Per Year</h6>
+    <div id="sample-metadata5"></div>
+  </div>
+  <div class="card smallest-card metric">
+    <h6>Population Density Per Year</h6>
+    <div id="sample-metadata6"></div>
   </div>
   <div class="card medium-card">
       <h3>Covid Cases vs GDP</h3>

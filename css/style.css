@@ -12,6 +12,12 @@ html, body {
     text-align: center;
 }
 
+.metric {
+    height: 100px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
 #map { 
     box-shadow: 5px 5px 5px rgb(4, 4, 4);
     border: 1px solid black;
@@ -48,7 +54,7 @@ body {
 
 .dashboard {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 20px;
     padding: 20px;
 }
@@ -61,19 +67,24 @@ body {
     box-shadow: 5px 5px 5px rgb(7, 7, 7);
 }
 
-.small-card {
+.smallest-card {
     grid-column: span 1;
     text-align: center;
 }
 
-.medium-card {
+.small-card {
     grid-column: span 2;
+    text-align: center;
 }
 
-.large-card {
+.medium-card {
     grid-column: span 3;
 }
 
-.xlarge-card {
+.large-card {
     grid-column: span 4;
+}
+
+.xlarge-card {
+    grid-column: span 6;
 }
