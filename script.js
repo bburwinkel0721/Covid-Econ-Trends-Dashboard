@@ -24,6 +24,18 @@ function getColor(d) {
                       '#FFEDA0';
 }
 
+// Changes the map coloring based on population denstiny
+function getColor2(d) {
+    return d > 20000 ? '#800026' :
+           d > 15000  ? '#BD0026' :
+           d > 10000  ? '#E31A1C' :
+           d > 5000  ? '#FC4E2A' :
+           d > 3000   ? '#FD8D3C' :
+           d > 2000  ? '#FEB24C' :
+           d > 1000   ? '#FED976' :
+                      '#FFEDA0';
+}
+
 // Styles the states
 function style(feature) {
     return {
@@ -38,8 +50,14 @@ function style(feature) {
 
 // Styles the counties
 function style2(feature) {
+    let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2023 = feature.properties['Covid Confirmed'][3]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+
+    let totalCaseCount = cases2020+cases2021+cases2022+cases2023
     return {
-        fillColor: 'white',
+        fillColor: getColor2(totalCaseCount),
         weight: 2,
         opacity: 1,
         color: 'white',
@@ -86,7 +104,7 @@ function resetHighlight(e) {
 
 // resets the highlighting on each county
 function resetHighlight2(e) {
-    geojson.resetStyle(e.target);
+    geojson2.resetStyle(e.target);
     info.update2();
 }
 
@@ -97,6 +115,13 @@ function zoomToFeature(e) {
 
 // Applies the functions to the states layer
 function onEachFeature(feature, layer) {
+    let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2023 = feature.properties['Covid Confirmed'][3]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+
+    let totalCaseCount = cases2020+cases2021+cases2022+cases2023
+
     layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
@@ -105,7 +130,7 @@ function onEachFeature(feature, layer) {
 
     layer.bindPopup('<h4>' + feature.properties.name + '</h4>' +
                     '<p>Popultion Density: ' + feature.properties.density + '</p>'+
-                    '<p>Total Covid Cases: ' +  ' people </p>');
+                    '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount + ' people </p>');
 }
 
 // Applies the functions to the counties layer
@@ -115,9 +140,16 @@ function onEachFeature2(feature, layer) {
         mouseout: resetHighlight2,
         click: zoomToFeature
     });
+    let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2023 = feature.properties['Covid Confirmed'][3]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+
+    let totalCaseCount = cases2020+cases2021+cases2022+cases2023
 
     layer.bindPopup('<h4>' + feature.properties.NAME + '</h4>' +
-                    '<p>Census Area: ' + feature.properties.CENSUSAREA + ' mi<sup>2</sup></p>');
+                    '<p>Census Area: ' + feature.properties.CENSUSAREA + ' mi<sup>2</sup></p>'+
+                    '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount + ' people </p>');
 }
 
 // Builds the state specific elements
@@ -173,136 +205,138 @@ function buildStatedata(state, year) {
         
     }
 
-    // Send unemployment data to be graphed
-    buildCharts(unemploymentRatesByMonth)
+// Send unemployment data to be graphed
+buildCharts(unemploymentRatesByMonth)
 
-    // Get the sum of the unemployment rates
-    const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+// Get the sum of the unemployment rates
+const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-    // Calculate the unemployment average
-    const average = sum / unemploymentRatesByMonth.length;
+// Calculate the unemployment average
+const average = sum / unemploymentRatesByMonth.length;
 
-    // Add unemployment average to panel 2
-    panel2.append("p")
-        .text(`${average.toFixed(1)}%`)
-        .style('opacity', 0)
-        .transition()
-        .duration(500)
-        .style('opacity', 1);
-    
-    // New Covid Cases data by year
-    let newCovidCaseByMonth =[]
-    for (let cases of propertiesList[0]){
-            if (cases.year == year){
-                newCovidCaseByMonth = cases['New Cases']
-            }
+// Add unemployment average to panel 2
+panel2.append("p")
+    .text(`${average.toFixed(1)}%`)
+    .style('opacity', 0)
+    .transition()
+    .duration(500)
+    .style('opacity', 1);
+
+// New Covid Cases data by year
+let newCovidCaseByMonth =[]
+for (let cases of propertiesList[0]){
+        if (cases.year == year){
+            newCovidCaseByMonth = cases['New Cases']
         }
-    
-    // 
-    buildCharts2(unemploymentRatesByMonth, newCovidCaseByMonth)
-    
-    // Get the sum of the new coivd cases that year
-    const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    }
 
-    // Add Covid Cases total to panel 3
-    panel3.append("p")
-        .text(`${sumCovidCases}`)
-        .style('opacity', 0)
-        .transition()
-        .duration(500)
-        .style('opacity', 1);
+// 
+buildCharts2(unemploymentRatesByMonth, newCovidCaseByMonth)
+    
+// Get the sum of the new coivd cases that year
+const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-    // New Covid Cases data by year
-    let newCovidDeathsByMonth =[]
-    for (let cases of propertiesList[1]){
-            if (cases.year == year){
-                newCovidDeathsByMonth = cases['New Deaths']
-            }
+// Add Covid Cases total to panel 3
+panel3.append("p")
+    .text(`${sumCovidCases}`)
+    .style('opacity', 0)
+    .transition()
+    .duration(500)
+    .style('opacity', 1);
+
+// New Covid Cases data by year
+let newCovidDeathsByMonth =[]
+for (let cases of propertiesList[1]){
+        if (cases.year == year){
+            newCovidDeathsByMonth = cases['New Deaths']
         }
+    }
+
+
+// Get the sum of the new coivd cases that year
+const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+// Add Covid deaths total to panel 4
+panel4.append("p")
+    .text(`${sumCovidDeaths}`)
+    .style('opacity', 0)
+    .transition()
+    .duration(500)
+    .style('opacity', 1);
+});
+
     
+
+}
+  
+// function for build charts
+function buildCharts(data){
+let yValues = data.reverse()
+Plotly.newPlot('chart2', [{
+    x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    y: yValues,
+    type: 'line'
+}]);
+}
+
+function buildCharts2(data, covid){
+let yValues = data.reverse()
+Plotly.newPlot('chart1', [{
+    x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    y: covid,
+    type: 'bar',
+    name: 'Covid Cases'
+}, {
+    x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    y: yValues,
+    type: 'bar',
+    name: 'Unemployment'
+}], {
+    barmode: 'group'
+});
+
+}
+  
+// initilize the dropdown menus
+function init() {
+d3.json(stateUrl).then((data) => {
+    // Get the names field
+    const namesField = []
+    for (state of data.features){
+    namesField.push(state.properties.name)
+    }
     
-    // Get the sum of the new coivd cases that year
-    const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    // List of the years in data
+    const yearField =[2020,2021,2022,2023]
 
-    // Add Covid deaths total to panel 4
-    panel4.append("p")
-        .text(`${sumCovidDeaths}`)
-        .style('opacity', 0)
-        .transition()
-        .duration(500)
-        .style('opacity', 1);
-    });
+    // Use d3 to select the dropdowns by id
+    let dropdownMenu = d3.select("#selDataset")
+    let dropdownMenu2 = d3.select("#selYear")
 
+    // Use the list of state names to populate the select options
+    dropdownMenu.selectAll("option")
+        .data(namesField)
+        .enter()
+        .append("option")
+        .text(d => d)
+        .attr("value", d => d);
+
+    // Use the list of the years to populate the select options
+    dropdownMenu2.selectAll("option")
+        .data(yearField)
+        .enter()
+        .append("option")
+        .text(d => d)
+        .attr("value", d => d);
+
+    // Get the first item from each list
+    const firstName = namesField[0]
+    const firstYear = yearField[0]
+
+    // Build state specific data
+    buildStatedata(firstName, firstYear)
     
-
-  }
-  
-  // function for build charts
-  function buildCharts(data){
-    let yValues = data.reverse()
-    Plotly.newPlot('chart2', [{
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: yValues,
-        type: 'line'
-    }]);
-  }
-
-  function buildCharts2(data, covid){
-    let yValues = data.reverse()
-    Plotly.newPlot('chart1', [{
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: covid,
-        type: 'bar',
-        name: 'Covid Cases'
-    }, {
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: yValues,
-        type: 'bar',
-        name: 'Unemployment'
-    }], {
-        barmode: 'group'
-    });
-  }
-  
-  // initilize the dropdown menus
-  function init() {
-    d3.json(stateUrl).then((data) => {
-      // Get the names field
-      const namesField = []
-      for (state of data.features){
-        namesField.push(state.properties.name)
-      }
-      
-      // List of the years in data
-      const yearField =[2020,2021,2022,2023]
-
-      // Use d3 to select the dropdowns by id
-      let dropdownMenu = d3.select("#selDataset")
-      let dropdownMenu2 = d3.select("#selYear")
-  
-      // Use the list of state names to populate the select options
-      dropdownMenu.selectAll("option")
-          .data(namesField)
-          .enter()
-          .append("option")
-          .text(d => d)
-          .attr("value", d => d);
-
-      // Use the list of the years to populate the select options
-      dropdownMenu2.selectAll("option")
-          .data(yearField)
-          .enter()
-          .append("option")
-          .text(d => d)
-          .attr("value", d => d);
-  
-      // Get the first item from each list
-      const firstName = namesField[0]
-      const firstYear = yearField[0]
-  
-      // Build state specific data
-      buildStatedata(firstName, firstYear)
-    });
+});
 }
 
 // Function for event listener if state is changed
@@ -318,8 +352,10 @@ function optionChangedYear(newYear) {
     let state = document.getElementById("selDataset").value
     // Build state specific data
     buildStatedata(state, newYear);
+   
     
 }
+
 
 init()
 
@@ -327,7 +363,7 @@ d3.json(stateUrl).then(data =>{
     d3.json(countyUrl).then(countiesData=> {
         
         geojson2 = L.geoJson(countiesData, {
-            style: style,
+            style: style2,
             onEachFeature: onEachFeature2
         }).addTo(map);
         
@@ -345,80 +381,58 @@ d3.json(stateUrl).then(data =>{
         // method that we will use to update the control based on feature properties passed
         info.update = function (props) {
             this._div.innerHTML = '<h4>US Map</h4>' +  (props ?
-                '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+                '<b>' + props.name + '</b><br />'
                 : 'Hover over a state');
             };
             
-            // method that we will use to update the control based on feature properties passed
-            info.update2 = function (name) {
-                this._div.innerHTML = '<h4>US Map</h4>' +  (name ?
-                    '<b>' + name + '</b><br />'
-                    : 'Hover over a county');
-                };
+        // method that we will use to update the control based on feature properties passed
+        info.update2 = function (name) {
+            this._div.innerHTML = '<h4>US Map</h4>' +  (name ?
+                '<b>' + name + '</b><br />'
+                : 'Hover over a county');
+            };
                 
-                info.addTo(map);
+        info.addTo(map);
                 
-                let baseMaps = {
-                    "Street Map": tiles
-                };
-                
-                const overlayMaps = {
-                    States: geojson,
-                    Counties: geojson2,
-                };
-                
-                // Create a layer control that contains our baseMaps.
-                let layerControl = L.control.layers(baseMaps, overlayMaps, {
-                    collapsed: false,
-                });
-                layerControl.addTo(map);
-                
-                var legend = L.control({position: 'bottomright'});
-                
-                legend.onAdd = function (map) {
-                    
-                    var div = L.DomUtil.create('div', 'info legend'),
-                    grades = [0, 10, 20, 50, 100, 200, 500, 1000],
-                    labels = [];
-                    
-                    // loop through our density intervals and generate a label with a colored square for each interval
-                    for (var i = 0; i < grades.length; i++) {
-                        div.innerHTML +=
-                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-                    }
-                    
-                    return div;
-                };
-                
-                legend.addTo(map);
-                
-                // Styling for the top ID number block
-                let idPanel = d3.select('.card')
-                idPanel.transition().duration(500)
-                
-                // Plotly.newPlot('chart1', [{
-                //     x: ['Oct 2019', 'Nov 2019', 'Dec 2019', 'Jan 2020', 'Feb 2020', 'Mar 2020'],
-                //     y: [500, 1500, 3000, 2500, 2000, 4500],
-                //     type: 'bar',
-                //     name: 'Covid Cases'
-                // }, {
-                //     x: ['Oct 2019', 'Nov 2019', 'Dec 2019', 'Jan 2020', 'Feb 2020', 'Mar 2020'],
-                //     y: [200, 800, 1200, 900, 500, 1000],
-                //     type: 'bar',
-                //     name: 'GDP'
-                // }], {
-                //     barmode: 'group'
-                // });
-
-
-                
-                // Plotly.newPlot('chart2', [{
-                //     x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                //     y: [4.0, 4.1, 4.2, 4.3, 4.5, 4.6, 4.8, 5.0, 5.1, 5.3, 5.4, 5.5],
-                //     type: 'line'
-                // }]);
-            })
+        let baseMaps = {
+            "Street Map": tiles
+        };
+        
+        const overlayMaps = {
+            States: geojson,
+            Counties: geojson2,
+        };
+        
+        // Create a layer control that contains our baseMaps.
+        let layerControl = L.control.layers(overlayMaps, null,{
+            collapsed: false,
+        });
+        layerControl.addTo(map);
+        
+        var legend = L.control({position: 'bottomright'});
+        
+        legend.onAdd = function (map) {
+            
+            var div = L.DomUtil.create('div', 'info legend'),
+            grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+            labels = [];
+            
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            
+            return div;
+        };
+        
+        legend.addTo(map);
+        
+        // Styling for the top ID number block
+        let idPanel = d3.select('.card')
+        idPanel.transition().duration(500)
+    })
 
 })
 
