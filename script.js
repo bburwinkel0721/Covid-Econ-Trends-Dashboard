@@ -219,7 +219,8 @@ function buildStatedata(state, year) {
         }
         
     }
-
+    unemploymentRatesByMonth.reverse()
+    
     // Send unemployment data to be graphed
     buildCharts(unemploymentRatesByMonth)
 
@@ -285,7 +286,7 @@ function buildStatedata(state, year) {
   
 // function for build charts
 function buildCharts(data){
-    let yValues = data.reverse()
+    let yValues = data
     Plotly.newPlot('chart2', [{
         x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         y: yValues,
@@ -294,7 +295,7 @@ function buildCharts(data){
 }
 
 function buildCharts2(data, covid){
-    let yValues = data.reverse()
+    let yValues = data
     Plotly.newPlot('chart1', [{
         x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         y: covid,
