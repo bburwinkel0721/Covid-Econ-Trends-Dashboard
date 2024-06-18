@@ -183,6 +183,7 @@ function buildStatedata(state, year) {
     let panel3 = d3.select('#sample-metadata3')
     let panel4 = d3.select('#sample-metadata4')
     let panel5 = d3.select('#sample-metadata5')
+    let panel6 = d3.select('#sample-metadata6')
 
     // Use `.html("") to clear any existing metadata
     panel.html("")
@@ -190,6 +191,7 @@ function buildStatedata(state, year) {
     panel3.html("")
     panel4.html("")
     panel5.html("")
+    panel6.html("")
     
     // Get properties from the selected state
     let propertiesList =[]
@@ -207,7 +209,7 @@ function buildStatedata(state, year) {
     for (let i=0; i<popAndYearList.length; i++){
         if (popAndYearList[i].year==year){
             panel.append("p")
-                .text(`${popAndYearList[i].Population}`)
+                .text(`${(popAndYearList[i].Population).toLocaleString()}`)
                 .style('opacity', 0)
                 .transition()
                 .duration(500)
@@ -215,7 +217,7 @@ function buildStatedata(state, year) {
                 .style("font-family", "Arial")
                 .style("font-size", "20px")
                 .style("font-weight", "bold")
-                .style("color", "blue");
+                .style("color", "purple");
         }
     }
 
@@ -249,7 +251,7 @@ function buildStatedata(state, year) {
         .style("font-family", "Arial")
         .style("font-size", "20px")
         .style("font-weight", "bold")
-        .style("color", "blue");
+        .style("color", "black");
 
     // New Covid Cases data by year
     let newCovidCaseByMonth =[]
@@ -267,7 +269,7 @@ function buildStatedata(state, year) {
 
     // Add Covid Cases total to panel 3
     panel3.append("p")
-        .text(`${sumCovidCases}`)
+        .text(`${sumCovidCases.toLocaleString()}`)
         .style('opacity', 0)
         .transition()
         .duration(500)
@@ -275,7 +277,7 @@ function buildStatedata(state, year) {
         .style("font-family", "Arial")
         .style("font-size", "20px")
         .style("font-weight", "bold")
-        .style("color", "green");
+        .style("color", "blue");
 
 
     // New Covid Cases data by year
@@ -294,7 +296,7 @@ function buildStatedata(state, year) {
 
     // Add Covid deaths total to panel 4
     panel4.append("p")
-        .text(`${sumCovidDeaths}`)
+        .text(`${sumCovidDeaths.toLocaleString()}`)
         .style('opacity', 0)
         .transition()
         .duration(500)
@@ -304,28 +306,38 @@ function buildStatedata(state, year) {
         .style("font-weight", "bold")
         .style("color", "red");
 
-        // Get the gdp data by year
-        let gdpDataList = []
-        Object.entries(propertiesList[2]).forEach(([key, value]) => {
-            gdpDataList.push(value)})
-        let gdpAndYearList = []
-        Object.entries(gdpDataList).forEach(([key, value]) => {
-            gdpAndYearList.push(value)})
-        for (let i=0; i<gdpAndYearList.length; i++){
-            if (gdpAndYearList[i].year==year){
-                panel5.append("p")
-                    .text(`$${(gdpAndYearList[i].GDP/1000000000).toFixed(1)}`)
-                    .style('opacity', 0)
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 1)
-                    .style("font-family", "Arial")
-                    .style("font-size", "20px")
-                    .style("font-weight", "bold")
-                    .style("color", "green");
-            }
+    // Get the gdp data by year
+    let gdpDataList = []
+    Object.entries(propertiesList[2]).forEach(([key, value]) => {
+        gdpDataList.push(value)})
+    let gdpAndYearList = []
+    Object.entries(gdpDataList).forEach(([key, value]) => {
+        gdpAndYearList.push(value)})
+    for (let i=0; i<gdpAndYearList.length; i++){
+        if (gdpAndYearList[i].year==year){
+            panel5.append("p")
+                .text(`$${(gdpAndYearList[i].GDP/1000000000).toLocaleString(undefined,{ maximumFractionDigits: 1 })}`)
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1)
+                .style("font-family", "Arial")
+                .style("font-size", "20px")
+                .style("font-weight", "bold")
+                .style("color", "green");
         }
-
+    }
+    
+    panel6.append("p")
+                .text(`${propertiesList[5]}`)
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1)
+                .style("font-family", "Arial")
+                .style("font-size", "20px")
+                .style("font-weight", "bold")
+                .style("color", "purple");
     
     
     });
