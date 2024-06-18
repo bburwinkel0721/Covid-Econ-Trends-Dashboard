@@ -1,8 +1,5 @@
 # Import the dependencies.
 from flask import Flask, jsonify
-import datetime as dt
-from datetime import datetime
-import dateutil.parser as parser
 from pymongo import MongoClient
 from flask_cors import CORS
 
@@ -13,12 +10,12 @@ from flask_cors import CORS
 # Create an instance of MongoClient
 mongo = MongoClient(port=27017)
 
+# Connect to the database
 us_states_db = mongo.us_states_db
 
+# Connect to the collections
 states = us_states_db['states']
-
 counties = us_states_db['counties']
-
 series_ids = us_states_db['series_ids']
 
 ################################################
