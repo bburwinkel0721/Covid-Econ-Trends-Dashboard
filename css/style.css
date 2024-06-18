@@ -79,6 +79,7 @@ body {
 
 .medium-card {
     grid-column: span 3;
+    height: 400px;
 }
 
 .large-card {
@@ -87,4 +88,7 @@ body {
 
 .xlarge-card {
     grid-column: span 6;
+}
+#chart1, #chart2, #chart3, #chart4, #chart5 {
+    height: 300px;
 }

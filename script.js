@@ -12,20 +12,21 @@ var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-// Changes the map coloring based on population denstiny
-function getColor(d) {
-    return d > 1000 ? '#800026' :
-           d > 500  ? '#BD0026' :
-           d > 200  ? '#E31A1C' :
-           d > 100  ? '#FC4E2A' :
-           d > 50   ? '#FD8D3C' :
-           d > 20   ? '#FEB24C' :
-           d > 10   ? '#FED976' :
-                      '#FFEDA0';
+// Changes the map coloring for states based on covid cases
+function getColorStates(d) {
+    return d > 2000000 ? '#800026' :
+           d > 1500000 ? '#BD0026' :
+           d > 1000000 ? '#E31A1C' :
+           d > 750000  ? '#FC4E2A' :
+           d > 500000  ? '#FD8D3C' :
+           d > 400000  ? '#FEB24C' :
+           d > 300000  ? '#FED976' :
+           d > 200000  ? '#FFEDA0' :
+                          '#FFFFCC' ;
 }
 
-// Changes the map coloring based on population denstiny
-function getColor2(d) {
+// Changes the map coloring for counties based on covid cases
+function getColorCounty(d) {
     return d > 200000 ? '#800026' :
            d > 150000 ? '#BD0026' :
            d > 100000 ? '#E31A1C' :
@@ -40,21 +41,17 @@ function getColor2(d) {
            d > 5000   ? '#7BCCC4' :
                       '#43A2CA';
 }
-// function getColor2(d) {
-//     return d > 20000 ? '#800026' :
-//            d > 15000  ? '#BD0026' :
-//            d > 10000  ? '#E31A1C' :
-//            d > 5000  ? '#FC4E2A' :
-//            d > 3000   ? '#FD8D3C' :
-//            d > 2000  ? '#FEB24C' :
-//            d > 1000   ? '#FED976' :
-//                       '#FFEDA0';
-// }
 
 // Styles the states
-function style(feature) {
+function styleStates(feature) {
+    let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    let cases2023 = feature.properties['Covid Confirmed'][3]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+
+    let totalCaseCount = cases2020+cases2021+cases2022+cases2023
     return {
-        fillColor: getColor(feature.properties.density),
+        fillColor: getColorStates(totalCaseCount),
         weight: 2,
         opacity: 1,
         color: 'white',
@@ -64,7 +61,7 @@ function style(feature) {
 }
 
 // Styles the counties
-function style2(feature) {
+function styleCounties(feature) {
     let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
@@ -72,7 +69,7 @@ function style2(feature) {
 
     let totalCaseCount = cases2020+cases2021+cases2022+cases2023
     return {
-        fillColor: getColor2(totalCaseCount),
+        fillColor: getColorCounty(totalCaseCount),
         weight: 2,
         opacity: 1,
         color: 'white',
@@ -82,7 +79,7 @@ function style2(feature) {
 }
 
 // Highlights the states
-function highlightFeature(e) {
+function highlightFeatureState(e) {
     var layer = e.target;
 
     layer.setStyle({
@@ -93,11 +90,11 @@ function highlightFeature(e) {
     });
 
     layer.bringToFront();
-    info.update(layer.feature.properties);
+    info.updateState(layer.feature.properties);
 }
 
 // Highlights the counties
-function highlightFeature2(e) {
+function highlightFeatureCounty(e) {
     var layer = e.target;
 
     layer.setStyle({
@@ -108,17 +105,17 @@ function highlightFeature2(e) {
     });
 
     layer.bringToFront();
-    info.update2(layer.feature.properties.NAME);
+    info.updateCounty(layer.feature.properties.NAME);
 }
 
 // resets the highlighting on each state
-function resetHighlight(e) {
+function resetHighlightState(e) {
     geojson.resetStyle(e.target);
     info.update();
 }
 
 // resets the highlighting on each county
-function resetHighlight2(e) {
+function resetHighlightCounty(e) {
     geojson2.resetStyle(e.target);
     info.update2();
 }
@@ -129,39 +126,46 @@ function zoomToFeature(e) {
 }
 
 // Applies the functions to the states layer
-function onEachFeature(feature, layer) {
+function onEachFeatureState(feature, layer) {
+    layer.on({
+        mouseover: highlightFeatureState,
+        mouseout: resetHighlightState,
+        click: zoomToFeature
+    });
+
+    // Grab covid cases for each year
     let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2023 = feature.properties['Covid Confirmed'][3]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 
+    // Total the cases up
     let totalCaseCount = cases2020+cases2021+cases2022+cases2023
 
-    layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: zoomToFeature
-    });
-
+    // Create popup for each state
     layer.bindPopup('<h4>' + feature.properties.name + '</h4>' +
                     '<p>Popultion Density: ' + feature.properties.density + '</p>'+
                     '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount + ' people </p>');
 }
 
 // Applies the functions to the counties layer
-function onEachFeature2(feature, layer) {
+function onEachFeatureCounty(feature, layer) {
     layer.on({
-        mouseover: highlightFeature2,
-        mouseout: resetHighlight2,
+        mouseover: highlightFeatureCounty,
+        mouseout: resetHighlightCounty,
         click: zoomToFeature
     });
+
+    // Grab covid cases for each year
     let cases2020 = feature.properties['Covid Confirmed'][0]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2021 = feature.properties['Covid Confirmed'][1]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2022 = feature.properties['Covid Confirmed'][2]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     let cases2023 = feature.properties['Covid Confirmed'][3]['New Cases'].reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 
+    // Total the cases up
     let totalCaseCount = cases2020+cases2021+cases2022+cases2023
 
+    // Create popup for each county
     layer.bindPopup('<h4>' + feature.properties.NAME + '</h4>' +
                     '<p>Census Area: ' + feature.properties.CENSUSAREA + ' mi<sup>2</sup></p>'+
                     '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount + ' people </p>');
@@ -208,6 +212,7 @@ function buildStatedata(state, year) {
         popAndYearList.push(value)})
     for (let i=0; i<popAndYearList.length; i++){
         if (popAndYearList[i].year==year){
+            // Add population to panel 1
             panel.append("p")
                 .text(`${(popAndYearList[i].Population).toLocaleString()}`)
                 .style('opacity', 0)
@@ -215,7 +220,7 @@ function buildStatedata(state, year) {
                 .duration(500)
                 .style('opacity', 1)
                 .style("font-family", "Arial")
-                .style("font-size", "20px")
+                .style("font-size", "25px")
                 .style("font-weight", "bold")
                 .style("color", "purple");
         }
@@ -249,7 +254,7 @@ function buildStatedata(state, year) {
         .duration(500)
         .style('opacity', 1)
         .style("font-family", "Arial")
-        .style("font-size", "20px")
+        .style("font-size", "25px")
         .style("font-weight", "bold")
         .style("color", "black");
 
@@ -275,7 +280,7 @@ function buildStatedata(state, year) {
         .duration(500)
         .style('opacity', 1)
         .style("font-family", "Arial")
-        .style("font-size", "20px")
+        .style("font-size", "25px")
         .style("font-weight", "bold")
         .style("color", "blue");
 
@@ -302,7 +307,7 @@ function buildStatedata(state, year) {
         .duration(500)
         .style('opacity', 1)
         .style("font-family", "Arial")
-        .style("font-size", "20px")
+        .style("font-size", "25px")
         .style("font-weight", "bold")
         .style("color", "red");
 
@@ -315,6 +320,7 @@ function buildStatedata(state, year) {
         gdpAndYearList.push(value)})
     for (let i=0; i<gdpAndYearList.length; i++){
         if (gdpAndYearList[i].year==year){
+            // Add GDP to panel 5
             panel5.append("p")
                 .text(`$${(gdpAndYearList[i].GDP/1000000000).toLocaleString(undefined,{ maximumFractionDigits: 1 })}`)
                 .style('opacity', 0)
@@ -322,12 +328,13 @@ function buildStatedata(state, year) {
                 .duration(500)
                 .style('opacity', 1)
                 .style("font-family", "Arial")
-                .style("font-size", "20px")
+                .style("font-size", "25px")
                 .style("font-weight", "bold")
                 .style("color", "green");
         }
     }
     
+    // Add population density to panel 6
     panel6.append("p")
                 .text(`${propertiesList[5]}`)
                 .style('opacity', 0)
@@ -335,10 +342,12 @@ function buildStatedata(state, year) {
                 .duration(500)
                 .style('opacity', 1)
                 .style("font-family", "Arial")
-                .style("font-size", "20px")
+                .style("font-size", "25px")
                 .style("font-weight", "bold")
                 .style("color", "purple");
     
+    // Send gdp data for graphing
+    buildCharts4(gdpAndYearList)
     
     });
 
@@ -346,7 +355,7 @@ function buildStatedata(state, year) {
         
 }
   
-// function for build charts
+// function for building chart 1
 function buildCharts(data){
     let yValues = data
     Plotly.newPlot('chart2', [{
@@ -356,6 +365,7 @@ function buildCharts(data){
     }]);
 }
 
+// function for building chart 2
 function buildCharts2(data, covid){
     let yValues = data
     Plotly.newPlot('chart1', [{
@@ -372,6 +382,8 @@ function buildCharts2(data, covid){
         barmode: 'group'
 });
 }
+
+// function for building chart 3
 function buildCharts3(cases,deaths){
     Plotly.newPlot('chart3', [{
         values: [cases, deaths],
@@ -380,6 +392,16 @@ function buildCharts3(cases,deaths){
     }]);
 }
 
+// function for building chart 4
+function buildCharts4(data){
+    let xValues = [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year]
+    let yValues = [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP]
+    Plotly.newPlot('chart4', [{
+        x: xValues,
+        y: yValues,
+        type: 'bar'
+    }]);
+}
   
 // initilize the dropdown menus
 function init() {
@@ -440,77 +462,86 @@ function optionChangedYear(newYear) {
     
 }
 
-
+// Initialize the starting information
 init()
 
+// Create the map
 d3.json(stateUrl).then(data =>{
     d3.json(countyUrl).then(countiesData=> {
         
+        // Load the county geojson data
         geojson2 = L.geoJson(countiesData, {
-            style: style2,
-            onEachFeature: onEachFeature2
+            style: styleCounties,
+            onEachFeature: onEachFeatureCounty
         }).addTo(map);
         
+        // Load the state geojson data
         geojson = L.geoJson(data, {
-            style: style,
-            onEachFeature: onEachFeature
+            style: styleStates,
+            onEachFeature: onEachFeatureState
         }).addTo(map);
         
+        // Create a basic info block for names
         info.onAdd = function (map) {
             this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-            this.update();
+            this.updateState();
             return this._div;
         };
         
-        // method that we will use to update the control based on feature properties passed
-        info.update = function (props) {
+        // Method that we will use to update the info block based on state
+        info.updateState = function (props) {
             this._div.innerHTML = '<h4>US Map</h4>' +  (props ?
                 '<b>' + props.name + '</b><br />'
                 : 'Hover over a state');
             };
             
-        // method that we will use to update the control based on feature properties passed
-        info.update2 = function (name) {
+        // Method that we will use to update the info block based on country
+        info.updateCounty = function (name) {
             this._div.innerHTML = '<h4>US Map</h4>' +  (name ?
                 '<b>' + name + '</b><br />'
                 : 'Hover over a county');
             };
-                
-        info.addTo(map);
-                
-        let baseMaps = {
-            "Street Map": tiles
-        };
         
+        // Adds the info block to the map
+        info.addTo(map);
+        
+        // Ratio buttons for the states and counties layers
         const overlayMaps = {
             States: geojson,
             Counties: geojson2,
         };
         
-        // Create a layer control that contains our baseMaps.
+        // Create a layer control that contains our states and counties layers.
         let layerControl = L.control.layers(overlayMaps, null,{
             collapsed: false,
         });
         layerControl.addTo(map);
         
+        // Create a legend for the covid cases intensty
         var legend = L.control({position: 'bottomright'});
         
+        // Add the legend info
         legend.onAdd = function (map) {
             
             var div = L.DomUtil.create('div', 'info legend'),
-            grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+            grades = [0, 200, 300, 400, 500, 750, 1000, 1500, 2000],
+            actualGrades = [0, 200000, 300000, 400000, 500000, 750000, 1000000, 1500000, 2000000],
             labels = [];
+            
+            // Create a title for the legend
+            div.innerHTML +='Covid Cases<br>in Thousands<br>'
             
             // loop through our density intervals and generate a label with a colored square for each interval
             for (var i = 0; i < grades.length; i++) {
                 div.innerHTML +=
-                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                '<i style="background:' + getColorStates(actualGrades[i] + 1) + '"></i> ' +
                 grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
             }
             
             return div;
         };
         
+        // Add the legend to the map
         legend.addTo(map);
         
         // Styling for the top ID number block
