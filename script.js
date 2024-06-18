@@ -267,7 +267,7 @@ function buildStatedata(state, year) {
         }
 
     // 
-    buildCharts2(unemploymentRatesByMonth, newCovidCaseByMonth)
+    buildCharts2(newCovidCaseByMonth)
         
     // Get the sum of the new coivd cases that year
     const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -358,49 +358,118 @@ function buildStatedata(state, year) {
 // function for building chart 1
 function buildCharts(data){
     let yValues = data
-    Plotly.newPlot('chart2', [{
+    let trace = {
         x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         y: yValues,
-        type: 'line'
-    }]);
+        mode: 'line',
+        // text: otuLabels,
+        marker: {
+        //   size: data,
+          color: 'black',
+        }
+      }
+
+    let chartData = [trace]
+
+    let layout = {
+        title: 'Unemployment Rates During the Year',
+        xaxis: {
+          title: 'Months'
+        },
+        yaxis: {
+          title: 'Percentage'
+        },
+        transition:{
+          duration: 500,
+          easing:'linear'
+        }
+      };
+    Plotly.react('chart1', chartData, layout);
 }
 
-// function for building chart 2
-function buildCharts2(data, covid){
+// Function for building chart 2
+function buildCharts2(data){
     let yValues = data
-    Plotly.newPlot('chart1', [{
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: covid,
-        type: 'bar',
-        name: 'Covid Cases'
-    }, {
+    let trace = {
         x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         y: yValues,
         type: 'bar',
-        name: 'Unemployment'
-    }], {
-        barmode: 'group'
-});
+        marker: {
+          color: 'blue',
+        }
+      }
+
+    let chartData = [trace]
+
+    let layout = {
+        title: 'New Covid Cases During the Year',
+        xaxis: {
+          title: 'Months'
+        },
+        yaxis: {
+          title: 'Case Numbers'
+        },
+        transition:{
+          duration: 500,
+          easing:'linear'
+        }
+      };
+    Plotly.react('chart2', chartData, layout);
 }
 
 // function for building chart 3
 function buildCharts3(cases,deaths){
-    Plotly.newPlot('chart3', [{
-        values: [cases, deaths],
-        labels: ['Cases', 'Deaths'],
-        type: 'pie'
-    }]);
+    let recoveries = cases - deaths
+    const trace = {
+        values: [recoveries, deaths],
+        labels: ['Recoveries', 'Deaths'],
+        type: 'pie',
+        marker: {
+            colors: ['blue', 'red']
+        }
+    };
+
+    let chartData = [trace]
+
+    let layout = {
+        title: 'Covid Recovery to Death Ratio',
+        transition:{
+          duration: 500,
+          easing:'linear'
+        }
+      };
+    Plotly.react('chart3', chartData, layout);
 }
 
 // function for building chart 4
 function buildCharts4(data){
     let xValues = [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year]
     let yValues = [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP]
-    Plotly.newPlot('chart4', [{
+    let trace = {
         x: xValues,
         y: yValues,
-        type: 'bar'
-    }]);
+        type: 'bar',
+        marker: {
+          color: 'green',
+        }
+      }
+
+    let chartData = [trace]
+
+    let layout = {
+        title: 'State GDP from 2018 to 2022',
+        xaxis: {
+          title: 'Years'
+        },
+        yaxis: {
+          title: 'US Dollars'
+        },
+        transition:{
+          duration: 500,
+          easing:'linear'
+        }
+      };
+    Plotly.react('chart4', chartData, layout);
 }
   
 // initilize the dropdown menus
@@ -530,7 +599,7 @@ d3.json(stateUrl).then(data =>{
             
             // Create a title for the legend
             div.innerHTML +='Covid Cases<br>in Thousands<br>'
-            
+
             // loop through our density intervals and generate a label with a colored square for each interval
             for (var i = 0; i < grades.length; i++) {
                 div.innerHTML +=
