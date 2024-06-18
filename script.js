@@ -182,20 +182,24 @@ function buildStatedata(state, year) {
     let panel2 = d3.select('#sample-metadata2')
     let panel3 = d3.select('#sample-metadata3')
     let panel4 = d3.select('#sample-metadata4')
+    let panel5 = d3.select('#sample-metadata5')
 
     // Use `.html("") to clear any existing metadata
     panel.html("")
     panel2.html("")
     panel3.html("")
     panel4.html("")
+    panel5.html("")
     
     // Get properties from the selected state
     let propertiesList =[]
     Object.entries(desiredState[0].properties).forEach(([key, value]) => {
         propertiesList.push(value)
     })
+
+    // Get the population data by year
     let populationDataList = []
-    Object.entries(propertiesList[2]).forEach(([key, value]) => {
+    Object.entries(propertiesList[3]).forEach(([key, value]) => {
         populationDataList.push(value)})
     let popAndYearList = []
     Object.entries(populationDataList).forEach(([key, value]) => {
@@ -203,17 +207,22 @@ function buildStatedata(state, year) {
     for (let i=0; i<popAndYearList.length; i++){
         if (popAndYearList[i].year==year){
             panel.append("p")
-                .text(`${popAndYearList[i].Population} People`)
+                .text(`${popAndYearList[i].Population}`)
                 .style('opacity', 0)
                 .transition()
                 .duration(500)
-                .style('opacity', 1);
+                .style('opacity', 1)
+                .style("font-family", "Arial")
+                .style("font-size", "20px")
+                .style("font-weight", "bold")
+                .style("color", "blue");
         }
     }
 
+    
     // Get umemployment data by year
     let unemploymentRatesByMonth = []
-    for (let month of propertiesList[3]){
+    for (let month of propertiesList[4]){
         if (month.year == year){
             unemploymentRatesByMonth.push(month.value)
         }
@@ -236,7 +245,11 @@ function buildStatedata(state, year) {
         .style('opacity', 0)
         .transition()
         .duration(500)
-        .style('opacity', 1);
+        .style('opacity', 1)
+        .style("font-family", "Arial")
+        .style("font-size", "20px")
+        .style("font-weight", "bold")
+        .style("color", "blue");
 
     // New Covid Cases data by year
     let newCovidCaseByMonth =[]
@@ -258,7 +271,11 @@ function buildStatedata(state, year) {
         .style('opacity', 0)
         .transition()
         .duration(500)
-        .style('opacity', 1);
+        .style('opacity', 1)
+        .style("font-family", "Arial")
+        .style("font-size", "20px")
+        .style("font-weight", "bold")
+        .style("color", "green");
 
 
     // New Covid Cases data by year
@@ -272,15 +289,48 @@ function buildStatedata(state, year) {
     // Get the sum of the new coivd cases that year
     const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     
+    // Send sum of covid cases and eaths to be graphed as a pie chart
     buildCharts3(sumCovidCases,sumCovidDeaths)
+
     // Add Covid deaths total to panel 4
     panel4.append("p")
         .text(`${sumCovidDeaths}`)
         .style('opacity', 0)
         .transition()
         .duration(500)
-        .style('opacity', 1);
+        .style('opacity', 1)
+        .style("font-family", "Arial")
+        .style("font-size", "20px")
+        .style("font-weight", "bold")
+        .style("color", "red");
+
+        // Get the gdp data by year
+        let gdpDataList = []
+        Object.entries(propertiesList[2]).forEach(([key, value]) => {
+            gdpDataList.push(value)})
+        let gdpAndYearList = []
+        Object.entries(gdpDataList).forEach(([key, value]) => {
+            gdpAndYearList.push(value)})
+        for (let i=0; i<gdpAndYearList.length; i++){
+            if (gdpAndYearList[i].year==year){
+                panel5.append("p")
+                    .text(`$${(gdpAndYearList[i].GDP/1000000000).toFixed(1)}`)
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1)
+                    .style("font-family", "Arial")
+                    .style("font-size", "20px")
+                    .style("font-weight", "bold")
+                    .style("color", "green");
+            }
+        }
+
+    
+    
     });
+
+
         
 }
   
