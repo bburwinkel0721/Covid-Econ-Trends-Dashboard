@@ -111,13 +111,13 @@ function highlightFeatureCounty(e) {
 // resets the highlighting on each state
 function resetHighlightState(e) {
     geojson.resetStyle(e.target);
-    info.update();
+    info.updateState();
 }
 
 // resets the highlighting on each county
 function resetHighlightCounty(e) {
     geojson2.resetStyle(e.target);
-    info.update2();
+    info.updateCounty();
 }
 
 // Zooms in on whatever is selected on the map
@@ -474,44 +474,44 @@ function buildCharts4(data){
   
 // initilize the dropdown menus
 function init() {
-d3.json(stateUrl).then((data) => {
-    // Get the names field
-    const namesField = []
-    for (state of data.features){
-    namesField.push(state.properties.name)
-    }
-    
-    // List of the years in data
-    const yearField =[2020,2021,2022,2023]
+    d3.json(stateUrl).then((data) => {
+        // Get the names field
+        const namesField = []
+        for (state of data.features){
+        namesField.push(state.properties.name)
+        }
+        
+        // List of the years in data
+        const yearField =[2020,2021,2022,2023]
 
-    // Use d3 to select the dropdowns by id
-    let dropdownMenu = d3.select("#selDataset")
-    let dropdownMenu2 = d3.select("#selYear")
+        // Use d3 to select the dropdowns by id
+        let dropdownMenu = d3.select("#selDataset")
+        let dropdownMenu2 = d3.select("#selYear")
 
-    // Use the list of state names to populate the select options
-    dropdownMenu.selectAll("option")
-        .data(namesField)
-        .enter()
-        .append("option")
-        .text(d => d)
-        .attr("value", d => d);
+        // Use the list of state names to populate the select options
+        dropdownMenu.selectAll("option")
+            .data(namesField)
+            .enter()
+            .append("option")
+            .text(d => d)
+            .attr("value", d => d);
 
-    // Use the list of the years to populate the select options
-    dropdownMenu2.selectAll("option")
-        .data(yearField)
-        .enter()
-        .append("option")
-        .text(d => d)
-        .attr("value", d => d);
+        // Use the list of the years to populate the select options
+        dropdownMenu2.selectAll("option")
+            .data(yearField)
+            .enter()
+            .append("option")
+            .text(d => d)
+            .attr("value", d => d);
 
-    // Get the first item from each list
-    const firstName = namesField[0]
-    const firstYear = yearField[0]
+        // Get the first item from each list
+        const firstName = namesField[0]
+        const firstYear = yearField[0]
 
-    // Build state specific data
-    buildStatedata(firstName, firstYear)
-    
-});
+        // Build state specific data
+        buildStatedata(firstName, firstYear)
+        
+    });
 }
 
 // Function for event listener if state is changed
@@ -574,7 +574,7 @@ d3.json(stateUrl).then(data =>{
         // Adds the info block to the map
         info.addTo(map);
         
-        // Ratio buttons for the states and counties layers
+        // Radio buttons for the states and counties layers
         const overlayMaps = {
             States: geojson,
             Counties: geojson2,
