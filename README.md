@@ -1,7 +1,7 @@
 # covid_project
 ## Project Overview and Goal
-- The ultimate goal of this project is to create a dynamic and interactive dashboard that will allow individuals to explore relationships between historic Covid-19 data and economical data for each state.
-- To accomplish this task, we pulled in data from various sources, manipulate that data into a more usable format, created our own database with the desired structure, hosted that data using our own application, and then used that data to create a dynmaic online dashboard.
+- The ultimate goal of this project is to create a dynamic and interactive dashboard that will allow individuals to explore relationships between historical Covid-19 and economical data for each U.S. state.
+- To accomplish this task, we extracted data from various sources, transformed that data into a more usable format, loaded it into a database with the desired structure, hosted that data using our own application programming interface, and then used that data to create a dynmaic interactive online dashboard.
 ## Data Sources
 - [Johns Hopkins Whiting School of Engineering Covid- 19 Github Repository](https://github.com/CSSEGISandData/COVID-19)
 - [Bureau of Economic Analysis API ](https://apps.bea.gov/API/signup/?_gl=1*1xk07q5*_ga*MTQ2MTU2MTg5My4xNzE4MjM5ODA3*_ga_J4698JNNFT*MTcxODY2OTAwOC40LjAuMTcxODY2OTAwOC42MC4wLjA.)
