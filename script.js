@@ -144,8 +144,8 @@ function onEachFeatureState(feature, layer) {
 
     // Create popup for each state
     layer.bindPopup('<h4>' + feature.properties.name + '</h4>' +
-                    '<p>Popultion Density: ' + feature.properties.density + '</p>'+
-                    '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount + ' people </p>');
+                    '<p>Popultion Density: ' + feature.properties.density + ' people/mi<sup>2</sup></p>'+
+                    '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount.toLocaleString() + ' people </p>');
 }
 
 // Applies the functions to the counties layer
@@ -168,7 +168,7 @@ function onEachFeatureCounty(feature, layer) {
     // Create popup for each county
     layer.bindPopup('<h4>' + feature.properties.NAME + '</h4>' +
                     '<p>Census Area: ' + feature.properties.CENSUSAREA + ' mi<sup>2</sup></p>'+
-                    '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount + ' people </p>');
+                    '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount.toLocaleString() + ' people </p>');
 }
 
 // Builds the state specific elements
