@@ -336,9 +336,11 @@ function buildStatedata(state, year) {
         }
     }
     
+    for (let i=0; i<gdpAndYearList.length; i++){
+        if (gdpAndYearList[i].year==year){
     // Add population density to panel 6
     panel6.append("p")
-                .text(`${propertiesList[5]}`)
+                .text(`$${((gdpAndYearList[i].GDP)/(popAndYearList[i-2].Population)).toLocaleString(undefined,{ maximumFractionDigits: 0 })}`)
                 .style('opacity', 0)
                 .transition()
                 .duration(500)
@@ -347,7 +349,7 @@ function buildStatedata(state, year) {
                 .style("font-size", "25px")
                 .style("font-weight", "bold")
                 .style("color", "purple");
-    
+        }}
     // Send gdp data for graphing
     buildCharts4(gdpAndYearList)
 
@@ -510,7 +512,7 @@ function buildCharts5(year){
             type: 'bar',
             orientation: 'h',
             marker: {
-            color: 'blue',
+            color: 'purple',
             }
         }
 
