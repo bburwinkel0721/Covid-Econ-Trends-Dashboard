@@ -171,6 +171,8 @@ function onEachFeatureCounty(feature, layer) {
                     '<p>Total Covid Cases From January 2020 to Febuary 2023: ' + totalCaseCount.toLocaleString() + ' people </p>');
 }
 
+
+
 // Builds the state specific elements
 function buildStatedata(state, year) {
     d3.json(stateUrl).then((data) => {
@@ -348,6 +350,8 @@ function buildStatedata(state, year) {
     
     // Send gdp data for graphing
     buildCharts4(gdpAndYearList)
+
+    buildCharts5(year)
     
     });
 
@@ -470,6 +474,67 @@ function buildCharts4(data){
         }
       };
     Plotly.react('chart4', chartData, layout);
+}
+
+// Function for building chart 5
+function buildCharts5(year){
+    d3.json(stateUrl).then((data) => {
+        let GDPYearIndex = year - 2018
+        let popYearIndex = year - 2020
+        let states = data.features
+        let GDPPerCapList = []
+        for (let state of states){
+            try{
+                let GPDPerCap = ((state.properties.GDP[GDPYearIndex].GDP)/(state.properties.Population[popYearIndex].Population))
+                let stateName = state.properties.name
+                let dic = {
+                    Name:stateName,
+                    Value: GPDPerCap
+                }
+                GDPPerCapList.push(dic)
+            } catch(TypeError){
+                // console.error('An error occurred:', TypeError);
+            }
+        }
+        GDPPerCapList.sort((a,b)=>b.Value-a.Value);
+        let xValues = []
+        let yValues = []
+        for (let i=0; i<10; i++){
+            yValues.push(GDPPerCapList[i].Name)
+            xValues.push(GDPPerCapList[i].Value)
+        }
+        
+        let trace = {
+            x: xValues.reverse(),
+            y: yValues.reverse(),
+            type: 'bar',
+            orientation: 'h',
+            marker: {
+            color: 'blue',
+            }
+        }
+
+        let chartData = [trace]
+
+        let layout = {
+            title: 'Top 10 GDP Per Capita',
+            xaxis: {
+            title: 'GDP per Capita'
+            },
+            transition:{
+            duration: 500,
+            easing:'linear'
+            },
+            margin: {
+                l: 150, // Adjust the left margin to make room for longer names
+                r: 50,
+                b: 50,
+                t: 50,
+                pad: 4
+              },
+        };
+        Plotly.react('chart5', chartData, layout);
+    })
 }
   
 // initilize the dropdown menus
