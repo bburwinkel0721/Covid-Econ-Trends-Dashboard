@@ -13,7 +13,7 @@
 - Run the flask app to host the data as an API.
 - Then run the html in a browser to interact with the dashboard.
 - or
-- Open the GitHub page located [here]()
+- Open the GitHub page located [here](https://bburwinkel0721.github.io/covid_project/)
 ## [Presentation Link](https://docs.google.com/presentation/d/1-6jFAtXNObbaPopxcbQmAXAUhXvNHklNhyZMqLEYZaE/edit#slide=id.g2ad09d5c6ba_0_253)
 ## Data Sources
 - [Johns Hopkins Whiting School of Engineering Covid- 19 Github Repository](https://github.com/CSSEGISandData/COVID-19)
