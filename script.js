@@ -294,22 +294,74 @@ function buildCharts(data){
     }]);
 }
 
-function buildCharts2(data, covid){
-    let yValues = data
-    Plotly.newPlot('chart1', [{
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+// // duel line chart
+// function buildCharts2(data, covid){
+//     let yValues = data
+//     Plotly.newPlot('chart1', [{
+//         x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+//         y: covid,
+//         type: 'bar',
+//         name: 'Covid Cases'
+//     }, {
+//         x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+//         y: yValues,
+//         type: 'bar',
+//         name: 'Unemployment'
+//     }], {
+//         barmode: 'group'
+// });
+// }
+// new duel line trial
+function buildCharts2(data, covid) {
+    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    // Trace for Unemployment Rates
+    var trace1 = {
+        x: months,
+        y: data,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Unemployment Rate',
+        yaxis: 'y1'
+    };
+
+    // Trace for New Covid Cases
+    var trace2 = {
+        x: months,
         y: covid,
-        type: 'bar',
-        name: 'Covid Cases'
-    }, {
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: yValues,
-        type: 'bar',
-        name: 'Unemployment'
-    }], {
-        barmode: 'group'
-});
+        type: 'scatter',
+        mode: 'lines',
+        name: 'New Covid Cases',
+        yaxis: 'y2'
+    };
+
+    var data = [trace1, trace2];
+
+    var layout = {
+        title: 'Covid Cases vs Unemployment',
+        yaxis: { 
+            title: 'Unemployment Rate (%)',
+            side: 'left' 
+        },
+        yaxis2: {
+            title: 'New Covid Cases',
+            overlaying: 'y',
+            side: 'right'
+        },
+        xaxis: { 
+            title: 'Month' 
+        },
+        legend: {
+            x: 1,
+            xanchor: 'right',
+            y: 1
+        }
+    };
+
+    Plotly.newPlot('chart1', data, layout);
 }
+
+
 function buildCharts3(cases,deaths){
     Plotly.newPlot('chart3', [{
         values: [cases, deaths],
