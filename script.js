@@ -238,9 +238,6 @@ function buildStatedata(state, year) {
         
     }
     unemploymentRatesByMonth.reverse()
-    
-    // Send unemployment data to be graphed
-    buildCharts(unemploymentRatesByMonth)
 
     // Get the sum of the unemployment rates
     const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -269,7 +266,7 @@ function buildStatedata(state, year) {
         }
 
     // 
-    buildCharts2(newCovidCaseByMonth)
+    buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth)
         
     // Get the sum of the new coivd cases that year
     const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -299,7 +296,7 @@ function buildStatedata(state, year) {
     const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     
     // Send sum of covid cases and eaths to be graphed as a pie chart
-    buildCharts3(sumCovidCases,sumCovidDeaths)
+    buildCharts2(sumCovidCases,sumCovidDeaths)
 
     // Add Covid deaths total to panel 4
     panel4.append("p")
@@ -351,80 +348,72 @@ function buildStatedata(state, year) {
                 .style("color", "purple");
         }}
     // Send gdp data for graphing
-    buildCharts4(gdpAndYearList)
+    buildCharts3(gdpAndYearList)
 
-    buildCharts5(year)
+    buildCharts4(year)
     
     });
 
 
         
 }
-  
+
 // function for building chart 1
-function buildCharts(data){
-    let yValues = data
-    let trace = {
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: yValues,
-        mode: 'line',
-        // text: otuLabels,
-        marker: {
-        //   size: data,
-          color: 'black',
-        }
-      }
+function buildCharts(data, covid) {
+    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    // Trace for Unemployment Rates
+    var trace1 = {
+        x: months,
+        y: data,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Unemployment Rate',
+        yaxis: 'y1'
+    };
 
-    let chartData = [trace]
+    // Trace for New Covid Cases
+    var trace2 = {
+        x: months,
+        y: covid,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'New Covid Cases',
+        yaxis: 'y2'
+    };
 
-    let layout = {
-        title: 'Unemployment Rates During the Year',
-        xaxis: {
-          title: 'Months'
+    var data = [trace1, trace2];
+
+    var layout = {
+        title: 'Covid Cases vs Unemployment',
+        yaxis: { 
+            title: 'Unemployment Rate (%)',
+            side: 'left' 
         },
-        yaxis: {
-          title: 'Percentage'
+        yaxis2: {
+            title: 'New Covid Cases',
+            overlaying: 'y',
+            side: 'right'
         },
-        transition:{
-          duration: 500,
-          easing:'linear'
-        }
-      };
-    Plotly.react('chart1', chartData, layout);
-}
-
-// Function for building chart 2
-function buildCharts2(data){
-    let yValues = data
-    let trace = {
-        x: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        y: yValues,
-        type: 'bar',
-        marker: {
-          color: 'blue',
-        }
-      }
-
-    let chartData = [trace]
-
-    let layout = {
-        title: 'New Covid Cases During the Year',
-        xaxis: {
-          title: 'Months'
+        xaxis: { 
+            title: 'Month' 
         },
-        yaxis: {
-          title: 'Case Numbers'
+        legend: {
+            x: 1,
+            xanchor: 'right',
+            y: 1
         },
         transition:{
           duration: 500,
           easing:'linear'
         }
-      };
-    Plotly.react('chart2', chartData, layout);
+    };
+
+    Plotly.react('chart1', data, layout);
 }
 
-// function for building chart 3
-function buildCharts3(cases,deaths){
+// function for building chart 2
+function buildCharts2(cases,deaths){
     let recoveries = cases - deaths
     const trace = {
         values: [recoveries, deaths],
@@ -444,11 +433,11 @@ function buildCharts3(cases,deaths){
           easing:'linear'
         }
       };
-    Plotly.react('chart3', chartData, layout);
+    Plotly.react('chart2', chartData, layout);
 }
 
-// function for building chart 4
-function buildCharts4(data){
+// function for building chart 3
+function buildCharts3(data){
     let xValues = [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year]
     let yValues = [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP]
     let trace = {
@@ -475,11 +464,11 @@ function buildCharts4(data){
           easing:'linear'
         }
       };
-    Plotly.react('chart4', chartData, layout);
+    Plotly.react('chart3', chartData, layout);
 }
 
-// Function for building chart 5
-function buildCharts5(year){
+// Function for building chart 4
+function buildCharts4(year){
     d3.json(stateUrl).then((data) => {
         let GDPYearIndex = year - 2018
         let popYearIndex = year - 2020
@@ -535,7 +524,7 @@ function buildCharts5(year){
                 pad: 4
               },
         };
-        Plotly.react('chart5', chartData, layout);
+        Plotly.react('chart4', chartData, layout);
     })
 }
   
