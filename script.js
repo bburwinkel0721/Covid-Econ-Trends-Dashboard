@@ -6,6 +6,8 @@ countyUrl = 'http://127.0.0.1:5000/api/v1.0/counties'
 var map = L.map('map').setView([37.8, -96], 4);
 var geojson;
 var geojson2;
+var textColor = 'black'
+var cardColor = 'rgb(235, 235, 235)'
 var info = L.control();
 var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -391,23 +393,37 @@ function buildCharts(data, covid) {
 
     // layout for the plot
     var layout = {
-        title: 'Covid Cases vs Unemployment',
+        title: {
+            text:'Covid Cases vs Unemployment',
+            font: {
+                color: textColor, // Set the title text color to white
+                size: 18, // Optionally set the font size
+              }
+        },
+        paper_bgcolor: cardColor, // Set the overall background color (semi-transparent black)
+        plot_bgcolor: cardColor, // Set the plot area background color
         yaxis: { 
             title: 'Unemployment Rate (%)',
-            side: 'left' 
+            side: 'left',
+            color: textColor
         },
         yaxis2: {
             title: 'New Covid Cases',
             overlaying: 'y',
-            side: 'right'
+            side: 'right',
+            color: textColor
         },
         xaxis: { 
-            title: 'Month' 
+            title: 'Month',
+            color: textColor
         },
         legend: {
             x: 1.2,
             xanchor: 'right',
-            y: 1.2
+            y: 1.2,
+            font:{
+                color: textColor
+            }
         },
         transition:{
           duration: 500,
@@ -434,7 +450,13 @@ function buildCharts2(cases,deaths){
     title: {
         text: 'Covid Case',
         subtext: 'Recoveries to Deaths',
-        left: 'left'
+        left: 'left',
+        textStyle: {
+            color: textColor
+            },
+        subtextStyle:{
+            color: textColor
+        }
     },
     tooltip: {
         trigger: 'item',
@@ -465,7 +487,7 @@ function buildCharts2(cases,deaths){
         center: ['50%', '50%'],
         roseType: 'radius',
         label: {
-            color: 'black'
+            color: textColor
         },
         labelLine: {
             smooth: 0.2,
@@ -506,7 +528,7 @@ function buildCharts3(data){
         left: 'center',
         top: 20,
         textStyle: {
-        color: 'black'
+        color: textColor
         }
     },tooltip: {
         trigger: 'item',
@@ -524,18 +546,55 @@ function buildCharts3(data){
         data: [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year],
         name: 'Years',
         nameLocation: 'middle',
+        axisLine: {
+            lineStyle: {
+                color: textColor // Set the x-axis line color to black
+            }
+        },
+        axisTick: {
+            lineStyle: {
+                color: textColor // Set the x-axis tick color to black
+            }
+        },
+        splitLine: {
+            lineStyle: {
+                color: textColor // Set the x-axis split line color to black
+            }
+        },
         nameTextStyle: {
         fontSize: 12,
-        padding: 16
+        padding: 16,
+        color: textColor,
+        axisLabel:{
+            textStyle: {
+                color: textColor
+                }
+        }
         }
     },
     yAxis: {
         type: 'value',
         name: 'US Dollars (in Billions)',
         nameLocation: 'middle',
+        axisLine: {
+            lineStyle: {
+                color: textColor // Set the x-axis line color to black
+            }
+        },
+        axisTick: {
+            lineStyle: {
+                color: textColor // Set the x-axis tick color to black
+            }
+        },
+        splitLine: {
+            lineStyle: {
+                color: textColor // Set the x-axis split line color to black
+            }
+        },
         nameTextStyle: {
         fontSize: 12,
-        padding: 28
+        padding: 28,
+        color: textColor
         },
         axisLabel: {
           // Rotate the labels if they are too long
@@ -545,12 +604,15 @@ function buildCharts3(data){
             var adjustedValue = value/1000000000
             var formattedValue = '$' + adjustedValue.toLocaleString();
             return formattedValue; // Format with commas
-          }
+          },
+          textStyle: {
+            color: textColor
+            }
         }
     },
     grid: {
       left: '3%', // Increase left margin to make space for y-axis labels
-      right: '3%',
+      right: '5%',
       bottom: '10%', // Increase bottom margin to make space for x-axis name
       containLabel: true
     },
@@ -620,7 +682,10 @@ function buildCharts4(year){
         // Options for the bar chart
         option = {
         title: {
-            text: 'Top 10 GDP Per Capita'
+            text: 'Top 10 GDP Per Capita',
+            textStyle: {
+                color: textColor
+                }
         },
         tooltip: {
             trigger: 'axis',
@@ -634,7 +699,11 @@ function buildCharts4(year){
               return params[0].axisValueLabel + ': ' + formattedValue;
             }
         },
-        legend: {},
+        legend: {
+            textStyle: {
+                color: textColor
+                }
+        },
         grid: {
             left: '3%',
             right: '5%',
@@ -646,12 +715,30 @@ function buildCharts4(year){
             boundaryGap: [0, 0.01],
             name: 'GDP per Capita (Dollars)',
             nameLocation: 'middle',
+            axisLine: {
+                lineStyle: {
+                    color: textColor // Set the x-axis line color to black
+                }
+            },
+            axisTick: {
+                lineStyle: {
+                    color: textColor // Set the x-axis tick color to black
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: textColor // Set the x-axis split line color to black
+                }
+            },
             // Formatter to customize the values for the x-axis
             axisLabel: {formatter: function (value) {
               var adjustedValue = value
               var formattedValue = '$' + adjustedValue.toLocaleString();
               return formattedValue; 
-            }},
+            },
+            textStyle: {
+                color: textColor
+                }},
             nameTextStyle: {
             fontSize: 12,
             padding: 16
@@ -659,7 +746,22 @@ function buildCharts4(year){
         },
         yAxis: {
             type: 'category',
-            data: yValues.reverse()
+            data: yValues.reverse(),
+            axisLine: {
+                lineStyle: {
+                    color: textColor // Set the x-axis line color to black
+                }
+            },
+            axisTick: {
+                lineStyle: {
+                    color: textColor // Set the x-axis tick color to black
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: textColor // Set the x-axis split line color to black
+                }
+            },
         },
         series: [
             {
