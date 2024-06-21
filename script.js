@@ -749,7 +749,7 @@ d3.json(stateUrl).then(data =>{
         geojson2 = L.geoJson(countiesData, {
             style: styleCounties,
             onEachFeature: onEachFeatureCounty
-        }).addTo(map);
+        });
         
         // Load the state geojson data
         geojson = L.geoJson(data, {
@@ -782,13 +782,13 @@ d3.json(stateUrl).then(data =>{
         info.addTo(map);
         
         // Radio buttons for the states and counties layers
-        const overlayMaps = {
+        const baseMaps = {
             States: geojson,
             Counties: geojson2,
         };
         
         // Create a layer control that contains our states and counties layers.
-        let layerControl = L.control.layers(overlayMaps, null,{
+        let layerControl = L.control.layers(baseMaps, null,{
             collapsed: false,
         });
         layerControl.addTo(map);
