@@ -386,8 +386,10 @@ function buildCharts(data, covid) {
             color: 'blue'}
     };
 
+    // data for plot
     var data = [trace1, trace2];
 
+    // layout for the plot
     var layout = {
         title: 'Covid Cases vs Unemployment',
         yaxis: { 
@@ -413,16 +415,21 @@ function buildCharts(data, covid) {
         }
     };
 
+    // Create the plot
     Plotly.react('chart1', data, layout);
 }
 
 // function for building chart 2
 function buildCharts2(cases,deaths){
+    // Calculate recoveries
     let recoveries = cases - deaths
+
+    // Attach the chart to chart 2
     var chartDom = document.getElementById('chart2');
     var myChart = echarts.init(chartDom);
     var option;
 
+    // Options for the pie chart
     option = {
     title: {
         text: 'Covid Case',
@@ -479,16 +486,20 @@ function buildCharts2(cases,deaths){
     ]
     };
 
+    // Add options to the chart
     option && myChart.setOption(option);
 
 }
 
 // function for building chart 3
 function buildCharts3(data){
+
+    // Attach the chart to chart 3
     var chartDom = document.getElementById('chart3');
     var myChart = echarts.init(chartDom);
     var option;
 
+    // Options for the area chart
     option = {
     title: {
         text: 'State GDP Over the Years',
@@ -498,28 +509,49 @@ function buildCharts3(data){
         color: 'black'
         }
     },tooltip: {
-        trigger: 'item'
+        trigger: 'item',
+        // Formatter to customize the tooltip value for each marker
+        formatter: function (value) {
+          var adjustedValue = value.value/1000000000
+          var formattedValue = '$' + adjustedValue.toLocaleString(undefined,{ maximumFractionDigits: 0 });
+          var string = `${value.seriesName} ${value.name} in billions was ${formattedValue}`
+          return string; // Format with commas
+        }
     },
     xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year]
+        data: [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year],
+        name: 'Years',
+        nameLocation: 'middle',
+        nameTextStyle: {
+        fontSize: 12,
+        padding: 16
+        }
     },
     yAxis: {
         type: 'value',
+        name: 'US Dollars (in Billions)',
+        nameLocation: 'middle',
+        nameTextStyle: {
+        fontSize: 12,
+        padding: 28
+        },
         axisLabel: {
           // Rotate the labels if they are too long
           rotate: 30,
-          // Optional: Use formatter to control label formatting
+          // Formatter to customize the values for the y-axis
           formatter: function (value) {
-            return value.toLocaleString(); // Format with commas
+            var adjustedValue = value/1000000000
+            var formattedValue = '$' + adjustedValue.toLocaleString();
+            return formattedValue; // Format with commas
           }
         }
     },
     grid: {
-      left: '1%', // Increase left margin to make space for y-axis labels
+      left: '3%', // Increase left margin to make space for y-axis labels
       right: '3%',
-      bottom: '3%',
+      bottom: '10%', // Increase bottom margin to make space for x-axis name
       containLabel: true
     },
     series: [
@@ -536,16 +568,24 @@ function buildCharts3(data){
     ]
     };
 
+    // Add options to the chart
     option && myChart.setOption(option);
 }
 
 // Function for building chart 4
 function buildCharts4(year){
     d3.json(stateUrl).then((data) => {
+        // Grab years for the data
         let GDPYearIndex = year - 2018
         let popYearIndex = year - 2020
+
+        // Grab each state
         let states = data.features
+
+        // Create a list for the states
         let GDPPerCapList = []
+
+        // Loop through and get the gdp per capita for each state and there names
         for (let state of states){
             try{
                 let GPDPerCap = ((state.properties.GDP[GDPYearIndex].GDP)/(state.properties.Population[popYearIndex].Population))
@@ -559,44 +599,83 @@ function buildCharts4(year){
                 // console.error('An error occurred:', TypeError);
             }
         }
+        // Sort the list by the value in each object
         GDPPerCapList.sort((a,b)=>b.Value-a.Value);
+
+        // Create list for the x and y values
         let xValues = []
         let yValues = []
+
+        // Loop through the GDPPerCapList and grab the top ten states 
         for (let i=0; i<10; i++){
             yValues.push(GDPPerCapList[i].Name)
             xValues.push(GDPPerCapList[i].Value)
         }
         
-        let trace = {
-            x: xValues.reverse(),
-            y: yValues.reverse(),
-            type: 'bar',
-            orientation: 'h',
-            marker: {
-            color: 'purple',
+        // Attach the chart to chart 4
+        var chartDom = document.getElementById('chart4');
+        var myChart = echarts.init(chartDom);
+        var option;
+        
+        // Options for the bar chart
+        option = {
+        title: {
+            text: 'Top 10 GDP Per Capita'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+            type: 'shadow'
+            },
+            // Formatter to customize the tooltip value for each marker
+            formatter: function (params) {
+              var value = params[0].value;
+              var formattedValue = '$' + Math.round(value).toLocaleString();
+              return params[0].axisValueLabel + ': ' + formattedValue;
             }
-        }
-
-        let chartData = [trace]
-
-        let layout = {
-            title: 'Top 10 GDP Per Capita',
-            xaxis: {
-            title: 'GDP per Capita'
-            },
-            transition:{
-            duration: 500,
-            easing:'linear'
-            },
-            margin: {
-                l: 150, // Adjust the left margin to make room for longer names
-                r: 50,
-                b: 50,
-                t: 50,
-                pad: 4
+        },
+        legend: {},
+        grid: {
+            left: '3%',
+            right: '5%',
+            bottom: '10%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01],
+            name: 'GDP per Capita (Dollars)',
+            nameLocation: 'middle',
+            // Formatter to customize the values for the x-axis
+            axisLabel: {formatter: function (value) {
+              var adjustedValue = value
+              var formattedValue = '$' + adjustedValue.toLocaleString();
+              return formattedValue; 
+            }},
+            nameTextStyle: {
+            fontSize: 12,
+            padding: 16
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: yValues.reverse()
+        },
+        series: [
+            {
+            name: year,
+            type: 'bar',
+            center: ['50%', '50%'],
+            data: xValues.reverse(),
+            itemStyle: {
+                color: 'purple'
               },
+            }
+        ]
         };
-        Plotly.react('chart4', chartData, layout);
+
+        // Add options to the chart
+        option && myChart.setOption(option);
     })
 }
   

@@ -35,7 +35,7 @@ CORS(app)
 def home_route():
     """List of all available api routes:"""
     return (
-        f"Welcome to the landing page of the data website!<br/>" 
+        f"Welcome to the landing page of our Hidden Truth Behind Covid data website!<br/>" 
         f"<br/>" 
         f"Here are the Available Routes:<br/>"
         f"<br/>"
