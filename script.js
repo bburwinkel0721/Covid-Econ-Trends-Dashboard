@@ -369,7 +369,9 @@ function buildCharts(data, covid) {
         type: 'scatter',
         mode: 'lines',
         name: 'Unemployment Rate',
-        yaxis: 'y1'
+        yaxis: 'y1',
+        marker:{
+            color: 'black'}
     };
 
     // Trace for New Covid Cases
@@ -379,7 +381,9 @@ function buildCharts(data, covid) {
         type: 'scatter',
         mode: 'lines',
         name: 'New Covid Cases',
-        yaxis: 'y2'
+        yaxis: 'y2',
+        marker:{
+            color: 'blue'}
     };
 
     var data = [trace1, trace2];
@@ -399,9 +403,9 @@ function buildCharts(data, covid) {
             title: 'Month' 
         },
         legend: {
-            x: 1,
+            x: 1.2,
             xanchor: 'right',
-            y: 1
+            y: 1.2
         },
         transition:{
           duration: 500,
@@ -420,60 +424,57 @@ function buildCharts2(cases,deaths){
     var option;
 
     option = {
-    // backgroundColor: '#2c343c',
     title: {
-        text: 'Covid Case Recoveries to Deaths',
-        left: 'center',
-        top: 20,
-        textStyle: {
-        color: 'black'
-        }
+        text: 'Covid Case',
+        subtext: 'Recoveries to Deaths',
+        left: 'left'
     },
     tooltip: {
-        trigger: 'item'
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
     },
-    visualMap: {
-        show: false,
-        min: 80,
-        max: 600,
-        inRange: {
-        colorLightness: [0, 1]
+    legend: {
+        left: 'center',
+        top: 'bottom',
+        data: [
+        'rose1',
+        'rose2'
+        ]
+    },
+    toolbox: {
+        show: true,
+        feature: {
+        mark: { show: true },
+        dataView: { show: true, readOnly: false },
+        restore: { show: true },
+        saveAsImage: { show: true }
         }
     },
     series: [
         {
-        name: 'Covid Cases',
+        name: 'Covid Case',
         type: 'pie',
-        radius: '55%',
+        radius: [20, 140],
         center: ['50%', '50%'],
-        data: [
-            { value: recoveries, name: 'Recovered', itemStyle: { color: 'blue' } },
-            { value: deaths, name: 'Deaths', itemStyle: { color: 'red' } }
-        ].sort(function (a, b) {
-            return a.value - b.value;
-        }),
         roseType: 'radius',
         label: {
             color: 'black'
         },
         labelLine: {
-            lineStyle: {
-            color: 'black'
-            },
             smooth: 0.2,
             length: 10,
             length2: 20
         },
         itemStyle: {
+            borderRadius: 10,
             color: '#c23531',
-            shadowBlur: 200,
+            shadowBlur: 50,
             shadowColor: 'rgba(0, 0, 0, 0.5)'
         },
-        animationType: 'scale',
-        animationEasing: 'elasticOut',
-        animationDelay: function (idx) {
-            return Math.random() * 200;
-        }
+        data: [
+            { value: recoveries, name: 'Recoveries', itemStyle: { color: 'blue' }  },
+            { value: deaths, name: 'Deaths', itemStyle: { color: 'red' }  }
+        ]
         }
     ]
     };
@@ -526,6 +527,9 @@ function buildCharts3(data){
         name: 'GDP for',
         data: [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP],
         stack: 'Total',
+        itemStyle: {
+            color: 'green'
+          },
         type: 'line',
         areaStyle: {}
         }
