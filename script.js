@@ -415,56 +415,124 @@ function buildCharts(data, covid) {
 // function for building chart 2
 function buildCharts2(cases,deaths){
     let recoveries = cases - deaths
-    const trace = {
-        values: [recoveries, deaths],
-        labels: ['Recoveries', 'Deaths'],
-        type: 'pie',
-        marker: {
-            colors: ['blue', 'red']
+    var chartDom = document.getElementById('chart2');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+    // backgroundColor: '#2c343c',
+    title: {
+        text: 'Covid Case Recoveries to Deaths',
+        left: 'center',
+        top: 20,
+        textStyle: {
+        color: 'black'
         }
+    },
+    tooltip: {
+        trigger: 'item'
+    },
+    visualMap: {
+        show: false,
+        min: 80,
+        max: 600,
+        inRange: {
+        colorLightness: [0, 1]
+        }
+    },
+    series: [
+        {
+        name: 'Covid Cases',
+        type: 'pie',
+        radius: '55%',
+        center: ['50%', '50%'],
+        data: [
+            { value: recoveries, name: 'Recovered', itemStyle: { color: 'blue' } },
+            { value: deaths, name: 'Deaths', itemStyle: { color: 'red' } }
+        ].sort(function (a, b) {
+            return a.value - b.value;
+        }),
+        roseType: 'radius',
+        label: {
+            color: 'black'
+        },
+        labelLine: {
+            lineStyle: {
+            color: 'black'
+            },
+            smooth: 0.2,
+            length: 10,
+            length2: 20
+        },
+        itemStyle: {
+            color: '#c23531',
+            shadowBlur: 200,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+        },
+        animationType: 'scale',
+        animationEasing: 'elasticOut',
+        animationDelay: function (idx) {
+            return Math.random() * 200;
+        }
+        }
+    ]
     };
 
-    let chartData = [trace]
+    option && myChart.setOption(option);
 
-    let layout = {
-        title: 'Covid Recovery to Death Ratio',
-        transition:{
-          duration: 500,
-          easing:'linear'
-        }
-      };
-    Plotly.react('chart2', chartData, layout);
 }
 
 // function for building chart 3
 function buildCharts3(data){
-    let xValues = [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year]
-    let yValues = [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP]
-    let trace = {
-        x: xValues,
-        y: yValues,
-        type: 'bar',
-        marker: {
-          color: 'green',
-        }
-      }
+    var chartDom = document.getElementById('chart3');
+    var myChart = echarts.init(chartDom);
+    var option;
 
-    let chartData = [trace]
-
-    let layout = {
-        title: 'State GDP from 2018 to 2022',
-        xaxis: {
-          title: 'Years'
-        },
-        yaxis: {
-          title: 'US Dollars'
-        },
-        transition:{
-          duration: 500,
-          easing:'linear'
+    option = {
+    title: {
+        text: 'State GDP Over the Years',
+        left: 'center',
+        top: 20,
+        textStyle: {
+        color: 'black'
         }
-      };
-    Plotly.react('chart3', chartData, layout);
+    },tooltip: {
+        trigger: 'item'
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: [data[0].year,data[1].year,data[2].year,data[3].year,data[4].year]
+    },
+    yAxis: {
+        type: 'value',
+        axisLabel: {
+          // Rotate the labels if they are too long
+          rotate: 30,
+          // Optional: Use formatter to control label formatting
+          formatter: function (value) {
+            return value.toLocaleString(); // Format with commas
+          }
+        }
+    },
+    grid: {
+      left: '1%', // Increase left margin to make space for y-axis labels
+      right: '3%',
+      bottom: '3%',
+      containLabel: true
+    },
+    series: [
+        {
+        name: 'GDP for',
+        data: [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP],
+        stack: 'Total',
+        type: 'line',
+        areaStyle: {}
+        }
+    ]
+    };
+
+    option && myChart.setOption(option);
 }
 
 // Function for building chart 4
