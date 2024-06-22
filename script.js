@@ -266,7 +266,7 @@ function buildStatedata(state, year) {
         }
 
     // 
-    buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth)
+    buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth, state)
         
     // Get the sum of the new coivd cases that year
     const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -296,7 +296,7 @@ function buildStatedata(state, year) {
     const sumCovidDeaths = newCovidDeathsByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     
     // Send sum of covid cases and eaths to be graphed as a pie chart
-    buildCharts2(sumCovidCases,sumCovidDeaths)
+    buildCharts2(sumCovidCases,sumCovidDeaths,state)
 
     // Add Covid deaths total to panel 4
     panel4.append("p")
@@ -348,9 +348,11 @@ function buildStatedata(state, year) {
                 .style("color", "purple");
         }}
     // Send gdp data for graphing
-    buildCharts3(gdpAndYearList)
+    buildCharts3(gdpAndYearList,state)
 
     buildCharts4(year)
+
+    buildCharts5(state)
     
     });
 
@@ -359,7 +361,7 @@ function buildStatedata(state, year) {
 }
 
 // function for building chart 1
-function buildCharts(data, covid) {
+function buildCharts(data, covid, state) {
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
     // Trace for Unemployment Rates
@@ -388,10 +390,10 @@ function buildCharts(data, covid) {
 
     // data for plot
     var data = [trace1, trace2];
-
+    
     // layout for the plot
     var layout = {
-        title: 'Covid Cases vs Unemployment',
+        title: `Covid Cases vs Unemployment`,
         yaxis: { 
             title: 'Unemployment Rate (%)',
             side: 'left' 
@@ -420,7 +422,7 @@ function buildCharts(data, covid) {
 }
 
 // function for building chart 2
-function buildCharts2(cases,deaths){
+function buildCharts2(cases,deaths,state){
     // Calculate recoveries
     let recoveries = cases - deaths
 
@@ -432,8 +434,8 @@ function buildCharts2(cases,deaths){
     // Options for the pie chart
     option = {
     title: {
-        text: 'Covid Case',
-        subtext: 'Recoveries to Deaths',
+        text: `${state}`,
+        subtext: 'Covid Recoveries to Deaths',
         left: 'left'
     },
     tooltip: {
@@ -492,7 +494,7 @@ function buildCharts2(cases,deaths){
 }
 
 // function for building chart 3
-function buildCharts3(data){
+function buildCharts3(data,state){
 
     // Attach the chart to chart 3
     var chartDom = document.getElementById('chart3');
@@ -502,7 +504,7 @@ function buildCharts3(data){
     // Options for the area chart
     option = {
     title: {
-        text: 'State GDP Over the Years',
+        text: `${state} GDP Over the Years`,
         left: 'center',
         top: 20,
         textStyle: {
@@ -675,6 +677,100 @@ function buildCharts4(year){
         };
 
         // Add options to the chart
+        option && myChart.setOption(option);
+    })
+}
+
+function buildCharts5(state){
+    d3.json(stateUrl).then((data2) => {
+        // get the metadata field
+        const metaDataField = data2.features
+
+        // Filter the metadata for the object with the desired state
+        let desiredState = metaDataField.filter(object => object.properties.name == state)
+        let casesList = desiredState[0].properties['Covid Confirmed']
+
+        var chartDom = document.getElementById('chart5');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        let date = ['1/31/20', '2/29/20', '3/31/20', '4/30/20', '5/31/20', '6/30/20', '7/31/20', '8/31/20', '9/30/20', '10/31/20', '11/30/20', '12/31/20',
+        '1/31/21', '2/28/21', '3/31/21', '4/30/21', '5/31/21', '6/30/21', '7/31/21', '8/31/21', '9/30/21', '10/31/21', '11/30/21', '12/31/21',
+        '1/31/22', '2/28/22', '3/31/22', '4/30/22', '5/31/22', '6/30/22', '7/31/22', '8/31/22', '9/30/22', '10/31/22', '11/30/22', '12/31/22',
+        '1/31/23', '2/28/23'];
+        let data = [];
+        for (let caseYear of casesList){
+            for (let item of caseYear['New Cases']){
+                data.push(item);
+            }
+        }
+        
+        option = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+            return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: `New Covid Case for ${state}`
+        },
+        toolbox: {
+            feature: {
+            dataZoom: {
+                yAxisIndex: 'none'
+            },
+            restore: {},
+            saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: date
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+            {
+            type: 'inside',
+            start: 0,
+            end: 10
+            },
+            {
+            start: 0,
+            end: 10
+            }
+        ],
+        series: [
+            {
+            name: 'New Cases',
+            type: 'line',
+            symbol: 'none',
+            sampling: 'lttb',
+            itemStyle: {
+                color: 'rgb(255, 70, 131)'
+            },
+            areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                    offset: 0,
+                    color: 'rgb(255, 158, 68)'
+                },
+                {
+                    offset: 1,
+                    color: 'rgb(255, 70, 131)'
+                }
+                ])
+            },
+            data: data
+            }
+        ]
+        };
+
         option && myChart.setOption(option);
     })
 }
