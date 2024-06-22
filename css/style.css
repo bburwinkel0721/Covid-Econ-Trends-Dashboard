@@ -46,10 +46,15 @@ html, body {
     opacity: 0.7; }
 
 body {
-    background-color: rgb(137, 114, 157);
-    /* background-image: url('https://i.giphy.com/xGrjBxxEBvWTBtkAk4.webp');
-    background-size: cover; 
-    background-repeat: no-repeat;  */
+    background: linear-gradient(45deg, #ff9a9e, #179bca9b, hsl(102, 65%, 42%), #ff9a9e, #fbc2eb, #a18cd1, #db133b);
+    background-size: 600% 600%;
+    animation: gradientAnimation 30s ease infinite;
+    }
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .dashboard {
