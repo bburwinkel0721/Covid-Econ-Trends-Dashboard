@@ -206,10 +206,11 @@ function buildStatedata(state, year) {
     Object.entries(desiredState[0].properties).forEach(([key, value]) => {
         propertiesList.push(value)
     })
+    console.log(propertiesList)
 
     // Get the population data by year
     let populationDataList = []
-    Object.entries(propertiesList[3]).forEach(([key, value]) => {
+    Object.entries(propertiesList[4]).forEach(([key, value]) => {
         populationDataList.push(value)})
     let popAndYearList = []
     Object.entries(populationDataList).forEach(([key, value]) => {
@@ -233,7 +234,7 @@ function buildStatedata(state, year) {
     
     // Get umemployment data by year
     let unemploymentRatesByMonth = []
-    for (let month of propertiesList[4]){
+    for (let month of propertiesList[5]){
         if (month.year == year){
             unemploymentRatesByMonth.push(month.value)
         }
@@ -261,13 +262,13 @@ function buildStatedata(state, year) {
 
     // New Covid Cases data by year
     let newCovidCaseByMonth =[]
-    for (let cases of propertiesList[0]){
+    for (let cases of propertiesList[1]){
             if (cases.year == year){
                 newCovidCaseByMonth = cases['New Cases']
             }
         }
 
-    // 
+    // Build our dual axis chart
     buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth)
         
     // Get the sum of the new coivd cases that year
@@ -288,7 +289,7 @@ function buildStatedata(state, year) {
 
     // New Covid Cases data by year
     let newCovidDeathsByMonth =[]
-    for (let cases of propertiesList[1]){
+    for (let cases of propertiesList[2]){
             if (cases.year == year){
                 newCovidDeathsByMonth = cases['New Deaths']
             }
@@ -314,7 +315,7 @@ function buildStatedata(state, year) {
 
     // Get the gdp data by year
     let gdpDataList = []
-    Object.entries(propertiesList[2]).forEach(([key, value]) => {
+    Object.entries(propertiesList[3]).forEach(([key, value]) => {
         gdpDataList.push(value)})
     let gdpAndYearList = []
     Object.entries(gdpDataList).forEach(([key, value]) => {
@@ -335,31 +336,32 @@ function buildStatedata(state, year) {
         }
     }
     
+    // Grab the gdp data for the state
     for (let i=0; i<gdpAndYearList.length; i++){
         if (gdpAndYearList[i].year==year){
-    // Add population density to panel 6
-    panel6.append("p")
-                .text(`$${((gdpAndYearList[i].GDP)/(popAndYearList[i-2].Population)).toLocaleString(undefined,{ maximumFractionDigits: 0 })}`)
-                .style('opacity', 0)
-                .transition()
-                .duration(500)
-                .style('opacity', 1)
-                .style("font-family", "Arial")
-                .style("font-size", "25px")
-                .style("font-weight", "bold")
-                .style("color", "purple");
+            // Add gdp per capita to panel 6
+            panel6.append("p")
+                        .text(`$${((gdpAndYearList[i].GDP)/(popAndYearList[i-2].Population)).toLocaleString(undefined,{ maximumFractionDigits: 0 })}`)
+                        .style('opacity', 0)
+                        .transition()
+                        .duration(500)
+                        .style('opacity', 1)
+                        .style("font-family", "Arial")
+                        .style("font-size", "25px")
+                        .style("font-weight", "bold")
+                        .style("color", "purple");
         }}
+
     // Send gdp data for graphing
     buildCharts3(gdpAndYearList,state)
-
+    
+    // Build our top 10 bar chart
     buildCharts4(year)
 
+    // Build our large scale axis chart
     buildCharts5(state)
-    
     });
-
-
-        
+      
 }
 
 // function for building chart 1
@@ -402,29 +404,29 @@ function buildCharts(data, covid) {
                 size: 18, // Optionally set the font size
               }
         },
-        paper_bgcolor: cardColor, // Set the overall background color (semi-transparent black)
-        plot_bgcolor: cardColor, // Set the plot area background color
+        paper_bgcolor: cardColor, // Set color to match cardColor
+        plot_bgcolor: cardColor, // Set color to match cardColor
         yaxis: { 
             title: 'Unemployment Rate (%)',
             side: 'left',
-            color: textColor
+            color: textColor // Set text to common text color
         },
         yaxis2: {
             title: 'New Covid Cases',
             overlaying: 'y',
             side: 'right',
-            color: textColor
+            color: textColor // Set text to common text color
         },
         xaxis: { 
             title: 'Month',
-            color: textColor
+            color: textColor // Set text to common text color
         },
         legend: {
             x: 1.2,
             xanchor: 'right',
             y: 1.2,
             font:{
-                color: textColor
+                color: textColor // Set text to common text color
             }
         },
         transition:{
@@ -454,10 +456,10 @@ function buildCharts2(cases,deaths,state){
         subtext: 'Covid Recoveries to Deaths',
         left: 'left',
         textStyle: {
-            color: textColor
+            color: textColor // Set text to common text color
             },
         subtextStyle:{
-            color: textColor
+            color: textColor // Set text to common text color
         }
     },
     tooltip: {
@@ -489,7 +491,7 @@ function buildCharts2(cases,deaths,state){
         center: ['50%', '50%'],
         roseType: 'radius',
         label: {
-            color: textColor
+            color: textColor // Set text to common text color
         },
         labelLine: {
             smooth: 0.2,
@@ -530,7 +532,7 @@ function buildCharts3(data,state){
         left: 'center',
         top: 20,
         textStyle: {
-        color: textColor
+        color: textColor // Set text to common text color
         }
     },tooltip: {
         trigger: 'item',
@@ -539,7 +541,7 @@ function buildCharts3(data,state){
           var adjustedValue = value.value/1000000000
           var formattedValue = '$' + adjustedValue.toLocaleString(undefined,{ maximumFractionDigits: 0 });
           var string = `${value.seriesName} ${value.name} in billions was ${formattedValue}`
-          return string; // Format with commas
+          return string; 
         }
     },
     xAxis: {
@@ -550,17 +552,17 @@ function buildCharts3(data,state){
         nameLocation: 'middle',
         axisLine: {
             lineStyle: {
-                color: textColor // Set the x-axis line color to black
+                color: textColor // Set text to common text color
             }
         },
         axisTick: {
             lineStyle: {
-                color: textColor // Set the x-axis tick color to black
+                color: textColor // Set text to common text color
             }
         },
         splitLine: {
             lineStyle: {
-                color: textColor // Set the x-axis split line color to black
+                color: textColor // Set text to common text color
             }
         },
         nameTextStyle: {
@@ -569,7 +571,7 @@ function buildCharts3(data,state){
         color: textColor,
         axisLabel:{
             textStyle: {
-                color: textColor
+                color: textColor // Set text to common text color
                 }
         }
         }
@@ -580,17 +582,17 @@ function buildCharts3(data,state){
         nameLocation: 'middle',
         axisLine: {
             lineStyle: {
-                color: textColor // Set the x-axis line color to black
+                color: textColor // Set text to common text color
             }
         },
         axisTick: {
             lineStyle: {
-                color: textColor // Set the x-axis tick color to black
+                color: textColor // Set text to common text color
             }
         },
         splitLine: {
             lineStyle: {
-                color: textColor // Set the x-axis split line color to black
+                color: textColor // Set text to common text color
             }
         },
         nameTextStyle: {
@@ -608,7 +610,7 @@ function buildCharts3(data,state){
             return formattedValue; // Format with commas
           },
           textStyle: {
-            color: textColor
+            color: textColor // Set text to common text color
             }
         }
     },
@@ -686,7 +688,7 @@ function buildCharts4(year){
         title: {
             text: 'Top 10 GDP Per Capita',
             textStyle: {
-                color: textColor
+                color: textColor // Set text to common text color
                 }
         },
         tooltip: {
@@ -703,7 +705,7 @@ function buildCharts4(year){
         },
         legend: {
             textStyle: {
-                color: textColor
+                color: textColor // Set text to common text color
                 }
         },
         grid: {
@@ -719,17 +721,17 @@ function buildCharts4(year){
             nameLocation: 'middle',
             axisLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis line color to black
+                    color: textColor // Set text to common text color
                 }
             },
             axisTick: {
                 lineStyle: {
-                    color: textColor // Set the x-axis tick color to black
+                    color: textColor // Set text to common text color
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis split line color to black
+                    color: textColor // Set text to common text color
                 }
             },
             // Formatter to customize the values for the x-axis
@@ -739,7 +741,7 @@ function buildCharts4(year){
               return formattedValue; 
             },
             textStyle: {
-                color: textColor
+                color: textColor // Set text to common text color
                 }},
             nameTextStyle: {
             fontSize: 12,
@@ -751,17 +753,17 @@ function buildCharts4(year){
             data: yValues.reverse(),
             axisLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis line color to black
+                    color: textColor // Set text to common text color
                 }
             },
             axisTick: {
                 lineStyle: {
-                    color: textColor // Set the x-axis tick color to black
+                    color: textColor // Set text to common text color
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis split line color to black
+                    color: textColor // Set text to common text color
                 }
             },
         },
@@ -833,17 +835,17 @@ function buildCharts5(state){
             data: date,
             axisLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis line color to black
+                    color: textColor // Set text to common text color
                 }
             },
             axisTick: {
                 lineStyle: {
-                    color: textColor // Set the x-axis tick color to black
+                    color: textColor // Set text to common text color
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis split line color to black
+                    color: textColor // Set text to common text color
                 }
             },
         },
@@ -852,17 +854,17 @@ function buildCharts5(state){
             boundaryGap: [0, '100%'],
             axisLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis line color to black
+                    color: textColor // Set text to common text color
                 }
             },
             axisTick: {
                 lineStyle: {
-                    color: textColor // Set the x-axis tick color to black
+                    color: textColor // Set text to common text color
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: textColor // Set the x-axis split line color to black
+                    color: textColor // Set text to common text color
                 }
             },
         },
