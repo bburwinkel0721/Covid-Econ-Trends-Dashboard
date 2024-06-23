@@ -231,7 +231,31 @@ function buildStatedata(state, year) {
         }
     }
 
-    
+    // Get cpi data by year
+    let cpiThisYear = []
+    let cpiLastYear = []
+    let inflationByMonth = []
+    for (let month of propertiesList[0]){
+        if (month.year == year){
+            cpiThisYear.push(month.value)
+        }
+    }
+    for (let month of propertiesList[0]){
+        if (month.year == (year-1)){
+            cpiLastYear.push(month.value)
+        }
+    }
+    for (let i=0; i < 12; i++){
+        let inflationRate = ((cpiThisYear[i]-cpiLastYear[i])/cpiLastYear[i])*100
+        inflationByMonth.push(inflationRate)
+    }
+    inflationByMonth.reverse()
+    // Get the sum of the unemployment rates
+    const sumInflation = inflationByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    // Calculate the unemployment average
+    const averageInflation = sumInflation / inflationByMonth.length;
+
     // Get umemployment data by year
     let unemploymentRatesByMonth = []
     for (let month of propertiesList[5]){
@@ -243,14 +267,14 @@ function buildStatedata(state, year) {
     unemploymentRatesByMonth.reverse()
 
     // Get the sum of the unemployment rates
-    const sum = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const sumUnemployment = unemploymentRatesByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
     // Calculate the unemployment average
-    const average = sum / unemploymentRatesByMonth.length;
+    const averageUnemployment = sumUnemployment / unemploymentRatesByMonth.length;
 
     // Add unemployment average to panel 2
     panel2.append("p")
-        .text(`${average.toFixed(1)}%`)
+        .text(`${averageUnemployment.toFixed(1)}%`)
         .style('opacity', 0)
         .transition()
         .duration(500)
@@ -324,7 +348,8 @@ function buildStatedata(state, year) {
         if (gdpAndYearList[i].year==year){
             // Add GDP to panel 5
             panel5.append("p")
-                .text(`$${(gdpAndYearList[i].GDP/1000000000).toLocaleString(undefined,{ maximumFractionDigits: 1 })}`)
+                // .text(`$${(gdpAndYearList[i].GDP/1000000000).toLocaleString(undefined,{ maximumFractionDigits: 1 })}`)
+                .text(`${averageInflation.toFixed(1)}%`)
                 .style('opacity', 0)
                 .transition()
                 .duration(500)
@@ -360,8 +385,10 @@ function buildStatedata(state, year) {
 
     // Build our large scale axis chart
     buildCharts5(state)
+
+    buildCharts6(unemploymentRatesByMonth, newCovidCaseByMonth, inflationByMonth)
+
     });
-      
 }
 
 // function for building chart 1
@@ -908,6 +935,262 @@ function buildCharts5(state){
         option && myChart.setOption(option);
     })
 }
+
+function buildCharts6(unemploy, covid, inflation) {
+    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var chartDom = document.getElementById('chart6');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        visualMap: [
+            {
+                show: false,
+                type: 'continuous',
+                seriesIndex: 0,
+                min: 0,
+                max: 200
+            },
+            {
+                show: false,
+                type: 'continuous',
+                seriesIndex: 1,
+                dimension: 0,
+                min: 0,
+                max: months.length - 1
+            },
+            {
+                show: false,
+                type: 'continuous',
+                seriesIndex: 2,
+                dimension: 0,
+                min: 0,
+                max: months.length - 1
+            }
+        ],
+        title: [
+            {
+                top: '0%',
+                left: 'center',
+                text: `Monthly Covid Cases`
+            },
+            {
+                top: '32%',
+                left: 'center',
+                text: `Monthly Inflation Rates`
+            },
+            {
+                top: '68%',
+                left: 'center',
+                text: `Monthly Unemployment Rates`
+            }
+        ],
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: [
+            {
+                data: months
+            },
+            {
+                data: months,
+                gridIndex: 1
+            },
+            {
+                data: months,
+                gridIndex: 2
+            }
+        ],
+        yAxis: [
+            {},
+            {
+                gridIndex: 1
+            },
+            {
+                gridIndex: 2
+            }
+        ],
+        grid: [
+            {
+                top: '5%',
+                height: '20%'
+            },
+            {
+                top: '40%',
+                height: '20%'
+            },
+            {
+                top: '75%',
+                height: '20%'
+            }
+        ],
+        series: [
+            {
+                type: 'line',
+                showSymbol: false,
+                data: covid,
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        {
+                            offset: 0,
+                            color: 'rgb(255, 158, 68)'
+                        },
+                        {
+                            offset: 1,
+                            color: 'rgb(255, 70, 131)'
+                        }
+                    ])
+                }
+            },
+            {
+                type: 'line',
+                showSymbol: false,
+                data: inflation,
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        {
+                            offset: 0,
+                            color: 'rgb(255, 158, 68)'
+                        },
+                        {
+                            offset: 1,
+                            color: 'rgb(255, 70, 131)'
+                        }
+                    ])
+                }
+            },
+            {
+                type: 'line',
+                showSymbol: false,
+                data: unemploy,
+                xAxisIndex: 2,
+                yAxisIndex: 2,
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        {
+                            offset: 0,
+                            color: 'rgb(255, 158, 68)'
+                        },
+                        {
+                            offset: 1,
+                            color: 'rgb(255, 70, 131)'
+                        }
+                    ])
+                }
+            }
+        ]
+    };
+
+    option && myChart.setOption(option);
+}
+// function buildCharts6(unemploy, covid, inflation) {
+//     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+//     var chartDom = document.getElementById('chart6');
+//     var myChart = echarts.init(chartDom);
+//     var option;
+
+//     option = {
+//     // Make gradient line here
+//     visualMap: [
+//         {
+//         show: false,
+//         type: 'continuous',
+//         seriesIndex: 0,
+//         min: 0,
+//         max: 400
+//         },
+//         {
+//         show: false,
+//         type: 'continuous',
+//         seriesIndex: 1,
+//         dimension: 0,
+//         min: 0,
+//         max: months.length - 1
+//         }
+//     ],
+//     title: [
+//         {
+//         left: 'center',
+//         text: `Monthly Covid Cases`
+//         },
+//         {
+//         top: '55%',
+//         left: 'center',
+//         text: `Monthly Inflation Rates`
+//         }
+//     ],
+//     tooltip: {
+//         trigger: 'axis'
+//     },
+//     xAxis: [
+//         {
+//         data: months
+//         },
+//         {
+//         data: months,
+//         gridIndex: 1
+//         }
+//     ],
+//     yAxis: [
+//         {},
+//         {
+//         gridIndex: 1
+//         }
+//     ],
+//     grid: [
+//         {
+//         bottom: '60%'
+//         },
+//         {
+//         top: '60%'
+//         }
+//     ],
+//     series: [
+//         {
+//         type: 'line',
+//         showSymbol: false,
+//         data: covid,
+//         areaStyle: {
+//           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+//             {
+//               offset: 0,
+//               color: 'rgb(255, 158, 68)'
+//             },
+//             {
+//               offset: 1,
+//               color: 'rgb(255, 70, 131)'
+//             }
+//           ])
+//         }
+
+//         },
+//         {
+//         type: 'line',
+//         showSymbol: false,
+//         data: inflation,
+//         xAxisIndex: 1,
+//         yAxisIndex: 1,
+//         areaStyle: {
+//           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+//             {
+//               offset: 0,
+//               color: 'rgb(255, 158, 68)'
+//             },
+//             {
+//               offset: 1,
+//               color: 'rgb(255, 70, 131)'
+//             }
+//           ])
+//         }
+//         }
+//     ]
+//     };
+
+//     option && myChart.setOption(option);
+
+// }
 
 // initilize the dropdown menus
 function init() {

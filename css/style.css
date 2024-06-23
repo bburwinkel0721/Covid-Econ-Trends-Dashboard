@@ -90,8 +90,8 @@ body {
 
 .xlarge-card {
     grid-column: span 6;
-    height: 400px;
+    /* height: 400px; */
 }
-#chart1, #chart2, #chart3, #chart4, #chart5 {
-    height: 500px;
+#chart1, #chart2, #chart3, #chart4, #chart5, #chart6 {
+    height: 600px;
 }
