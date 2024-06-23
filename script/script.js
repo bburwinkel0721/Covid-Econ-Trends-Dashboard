@@ -248,8 +248,7 @@ function buildStatedata(state, year) {
     Object.entries(desiredState[0].properties).forEach(([key, value]) => {
       propertiesList.push(value);
     });
-    console.log(propertiesList);
-
+  
     // Get the population data by year
     let populationDataList = [];
     Object.entries(propertiesList[4]).forEach(([key, value]) => {
@@ -421,7 +420,7 @@ function buildStatedata(state, year) {
           .style("font-size", "25px")
           .style("font-weight", "bold")
           .style("color", "purple");
-      }
+      } 
     }
 
     // Send sum of covid cases and eaths to be graphed as a pie chart
@@ -431,7 +430,11 @@ function buildStatedata(state, year) {
     // Send gdp data for graphing
     buildCharts3(gdpAndYearList, state);
     // Build our top 10 bar chart
-    buildCharts4(year);
+    if (year==2023){
+      
+    } else{
+      buildCharts4(year);
+    }
   });
 }
 
