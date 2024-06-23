@@ -293,7 +293,7 @@ function buildStatedata(state, year) {
         }
 
     // Build our dual axis chart
-    buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth)
+    // buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth)
         
     // Get the sum of the new coivd cases that year
     const sumCovidCases = newCovidCaseByMonth.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -384,7 +384,7 @@ function buildStatedata(state, year) {
     buildCharts4(year)
 
     // Build our large scale axis chart
-    buildCharts5(state)
+    // buildCharts5(state)
 
     buildCharts6(unemploymentRatesByMonth, newCovidCaseByMonth, inflationByMonth)
 
@@ -532,7 +532,16 @@ function buildCharts2(cases,deaths,state){
             shadowColor: 'rgba(0, 0, 0, 0.5)'
         },
         data: [
-            { value: recoveries, name: 'Recoveries', itemStyle: { color: 'blue' }  },
+            { value: recoveries, name: 'Recoveries', itemStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                    offset: 0,
+                    color: 'blue'
+                },
+                {
+                    offset: 1,
+                    color: 'black'
+                }
+            ]) }  },
             { value: deaths, name: 'Deaths', itemStyle: { color: 'red' }  }
         ]
         }
@@ -653,7 +662,16 @@ function buildCharts3(data,state){
         data: [data[0].GDP,data[1].GDP,data[2].GDP,data[3].GDP,data[4].GDP],
         stack: 'Total',
         itemStyle: {
-            color: 'green'
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                    offset: 0,
+                    color: 'green'
+                },
+                {
+                    offset: 1,
+                    color: 'black'
+                }
+            ])
           },
         type: 'line',
         areaStyle: {}
@@ -801,8 +819,29 @@ function buildCharts4(year){
             center: ['50%', '50%'],
             data: xValues.reverse(),
             itemStyle: {
-                color: 'purple'
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    {
+                        offset: 0,
+                        color: 'black'
+                    },
+                    {
+                        offset: 1,
+                        color: 'purple'
+                    }
+                ])
               },
+              areaStyle: {
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                      {
+                          offset: 0,
+                          color: 'rgb(255, 158, 68)'
+                      },
+                      {
+                          offset: 1,
+                          color: 'blue'
+                      }
+                  ])
+              }
             }
         ]
         };
@@ -1037,7 +1076,7 @@ function buildCharts6(unemploy, covid, inflation) {
                         },
                         {
                             offset: 1,
-                            color: 'rgb(255, 70, 131)'
+                            color: 'blue'
                         }
                     ])
                 }
@@ -1056,7 +1095,7 @@ function buildCharts6(unemploy, covid, inflation) {
                         },
                         {
                             offset: 1,
-                            color: 'rgb(255, 70, 131)'
+                            color: 'green'
                         }
                     ])
                 }
@@ -1075,7 +1114,7 @@ function buildCharts6(unemploy, covid, inflation) {
                         },
                         {
                             offset: 1,
-                            color: 'rgb(255, 70, 131)'
+                            color: 'black'
                         }
                     ])
                 }
