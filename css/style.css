@@ -47,10 +47,6 @@ html, body {
 
 body {
     background-color: rgb(131, 131, 132);
-    /* background-color: rgb(137, 114, 157); */
-    /* background-image: url('https://i.giphy.com/xGrjBxxEBvWTBtkAk4.webp');
-    background-size: cover; 
-    background-repeat: no-repeat;  */
 }
 
 .dashboard {
@@ -62,7 +58,6 @@ body {
 
 .card {
     background-color: rgb(235, 235, 235);
-    /* background-color: white; */
     border: 1px solid black;
     border-radius: 8px;
     padding: 20px;
@@ -88,10 +83,6 @@ body {
     grid-column: span 4;
 }
 
-.xlarge-card {
-    grid-column: span 6;
-    /* height: 400px; */
-}
-#chart1, #chart2, #chart3, #chart4, #chart5, #chart6 {
+#chart1, #chart2, #chart3, #chart4 {
     height: 400px;
 }

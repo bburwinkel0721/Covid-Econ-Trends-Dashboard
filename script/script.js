@@ -432,94 +432,15 @@ function buildStatedata(state, year) {
     buildCharts3(gdpAndYearList, state);
     // Build our top 10 bar chart
     buildCharts4(year);
-    // Build our large scale axis chart
-    // buildCharts5(state)
-    // Build our dual axis chart
-    // buildCharts(unemploymentRatesByMonth, newCovidCaseByMonth)
   });
 }
 
-// // function for building chart 1
-// function buildCharts(data, covid) {
-//     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-//     // Trace for Unemployment Rates
-//     var trace1 = {
-//         x: months,
-//         y: data,
-//         type: 'scatter',
-//         mode: 'lines',
-//         name: 'Unemployment Rate',
-//         yaxis: 'y1',
-//         marker:{
-//             color: 'black'}
-//     };
-
-//     // Trace for New Covid Cases
-//     var trace2 = {
-//         x: months,
-//         y: covid,
-//         type: 'scatter',
-//         mode: 'lines',
-//         name: 'New Covid Cases',
-//         yaxis: 'y2',
-//         marker:{
-//             color: 'blue'}
-//     };
-
-//     // data for plot
-//     var data = [trace1, trace2];
-
-//     // layout for the plot
-//     var layout = {
-//         title: {
-//             text:'Covid Cases vs Unemployment',
-//             font: {
-//                 color: textColor, // Set the title text color to white
-//                 size: 18, // Optionally set the font size
-//               }
-//         },
-//         paper_bgcolor: cardColor, // Set color to match cardColor
-//         plot_bgcolor: cardColor, // Set color to match cardColor
-//         yaxis: {
-//             title: 'Unemployment Rate (%)',
-//             side: 'left',
-//             color: textColor // Set text to common text color
-//         },
-//         yaxis2: {
-//             title: 'New Covid Cases',
-//             overlaying: 'y',
-//             side: 'right',
-//             color: textColor // Set text to common text color
-//         },
-//         xaxis: {
-//             title: 'Month',
-//             color: textColor // Set text to common text color
-//         },
-//         legend: {
-//             x: 1.2,
-//             xanchor: 'right',
-//             y: 1.2,
-//             font:{
-//                 color: textColor // Set text to common text color
-//             }
-//         },
-//         transition:{
-//           duration: 500,
-//           easing:'linear'
-//         }
-//     };
-
-//     // Create the plot
-//     Plotly.react('chart1', data, layout);
-// }
-
-// function for building chart 2
+// function for building chart 1
 function buildChart1(cases, deaths, state) {
   // Calculate recoveries
   let recoveries = cases - deaths;
 
-  // Attach the chart to chart 2
+  // Attach the chart to chart 1
   var chartDom = document.getElementById("chart1");
   var myChart = echarts.init(chartDom);
   var option;
@@ -580,6 +501,7 @@ function buildChart1(cases, deaths, state) {
           {
             value: recoveries,
             name: "Recoveries",
+            // Color the pie chart recoveries
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -603,6 +525,8 @@ function buildChart1(cases, deaths, state) {
   // Add options to the chart
   option && myChart.setOption(option);
 }
+
+// Function to create the stacked area graph
 function buildChart2(unemploy, covid, inflation) {
     let months = [
         "January",
@@ -618,10 +542,12 @@ function buildChart2(unemploy, covid, inflation) {
         "November",
         "December",
     ];
+    // Attach the chart to chart 2
     var chartDom = document.getElementById("chart2");
     var myChart = echarts.init(chartDom);
     var option;
 
+    // Options for the stacked area chart
     option = {
         visualMap: [
         {
@@ -763,6 +689,7 @@ function buildChart2(unemploy, covid, inflation) {
         ],
     };
 
+    // Add options to the chart
     option && myChart.setOption(option);
 }
 // function for building chart 3
@@ -797,6 +724,7 @@ function buildCharts3(data, state) {
     xAxis: {
       type: "category",
       boundaryGap: false,
+      // Supply the gdp data for the state
       data: [
         data[0].year,
         data[1].year,
@@ -824,7 +752,6 @@ function buildCharts3(data, state) {
       nameTextStyle: {
         fontSize: 12,
         padding: 16,
-        color: textColor,
         axisLabel: {
           textStyle: {
             color: textColor, // Set text to common text color
@@ -854,7 +781,7 @@ function buildCharts3(data, state) {
       nameTextStyle: {
         fontSize: 12,
         padding: 28,
-        color: textColor,
+        color: textColor, // Set text to common text color
       },
       axisLabel: {
         // Rotate the labels if they are too long
@@ -862,8 +789,8 @@ function buildCharts3(data, state) {
         // Formatter to customize the values for the y-axis
         formatter: function (value) {
           var adjustedValue = value / 1000000000;
-          var formattedValue = "$" + adjustedValue.toLocaleString();
-          return formattedValue; // Format with commas
+          var formattedValue = "$" + adjustedValue.toLocaleString(); // Format with commas
+          return formattedValue; 
         },
         textStyle: {
           color: textColor, // Set text to common text color
@@ -881,6 +808,7 @@ function buildCharts3(data, state) {
         name: "GDP for",
         data: [data[0].GDP, data[1].GDP, data[2].GDP, data[3].GDP, data[4].GDP],
         stack: "Total",
+        // Color the area under the line
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
@@ -1042,6 +970,7 @@ function buildCharts4(year) {
           type: "bar",
           center: ["50%", "50%"],
           data: xValues.reverse(),
+          // Coloring for the bars
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
               {
@@ -1053,19 +982,7 @@ function buildCharts4(year) {
                 color: "purple",
               },
             ]),
-          },
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: "rgb(255, 158, 68)",
-              },
-              {
-                offset: 1,
-                color: "blue",
-              },
-            ]),
-          },
+          }
         },
       ],
     };
@@ -1074,236 +991,6 @@ function buildCharts4(year) {
     option && myChart.setOption(option);
   });
 }
-
-// function buildCharts5(state){
-//     d3.json(stateUrl).then((data2) => {
-//         // get the metadata field
-//         const metaDataField = data2.features
-
-//         // Filter the metadata for the object with the desired state
-//         let desiredState = metaDataField.filter(object => object.properties.name == state)
-//         let casesList = desiredState[0].properties['Covid Confirmed']
-
-//         var chartDom = document.getElementById('chart5');
-//         var myChart = echarts.init(chartDom);
-//         var option;
-
-//         let date = ['1/31/20', '2/29/20', '3/31/20', '4/30/20', '5/31/20', '6/30/20', '7/31/20', '8/31/20', '9/30/20', '10/31/20', '11/30/20', '12/31/20',
-//         '1/31/21', '2/28/21', '3/31/21', '4/30/21', '5/31/21', '6/30/21', '7/31/21', '8/31/21', '9/30/21', '10/31/21', '11/30/21', '12/31/21',
-//         '1/31/22', '2/28/22', '3/31/22', '4/30/22', '5/31/22', '6/30/22', '7/31/22', '8/31/22', '9/30/22', '10/31/22', '11/30/22', '12/31/22',
-//         '1/31/23', '2/28/23'];
-//         let data = [];
-//         for (let caseYear of casesList){
-//             for (let item of caseYear['New Cases']){
-//                 data.push(item);
-//             }
-//         }
-
-//         option = {
-//         tooltip: {
-//             trigger: 'axis',
-//             position: function (pt) {
-//             return [pt[0], '10%'];
-//             }
-//         },
-//         title: {
-//             left: 'center',
-//             text: `New Covid Case for ${state}`
-//         },
-//         toolbox: {
-//             feature: {
-//             dataZoom: {
-//                 yAxisIndex: 'none'
-//             },
-//             restore: {},
-//             saveAsImage: {}
-//             }
-//         },
-//         xAxis: {
-//             type: 'category',
-//             boundaryGap: false,
-//             data: date,
-//             axisLine: {
-//                 lineStyle: {
-//                     color: textColor // Set text to common text color
-//                 }
-//             },
-//             axisTick: {
-//                 lineStyle: {
-//                     color: textColor // Set text to common text color
-//                 }
-//             },
-//             splitLine: {
-//                 lineStyle: {
-//                     color: textColor // Set text to common text color
-//                 }
-//             },
-//         },
-//         yAxis: {
-//             type: 'value',
-//             boundaryGap: [0, '100%'],
-//             axisLine: {
-//                 lineStyle: {
-//                     color: textColor // Set text to common text color
-//                 }
-//             },
-//             axisTick: {
-//                 lineStyle: {
-//                     color: textColor // Set text to common text color
-//                 }
-//             },
-//             splitLine: {
-//                 lineStyle: {
-//                     color: textColor // Set text to common text color
-//                 }
-//             },
-//         },
-//         dataZoom: [
-//             {
-//             type: 'inside',
-//             start: 0,
-//             end: 10
-//             },
-//             {
-//             start: 0,
-//             end: 10
-//             }
-//         ],
-//         series: [
-//             {
-//             name: 'New Cases',
-//             type: 'line',
-//             symbol: 'none',
-//             sampling: 'lttb',
-//             itemStyle: {
-//                 color: 'rgb(255, 70, 131)'
-//             },
-//             areaStyle: {
-//                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-//                 {
-//                     offset: 0,
-//                     color: 'rgb(255, 158, 68)'
-//                 },
-//                 {
-//                     offset: 1,
-//                     color: 'rgb(255, 70, 131)'
-//                 }
-//                 ])
-//             },
-//             data: data
-//             }
-//         ]
-//         };
-
-//         option && myChart.setOption(option);
-//     })
-// }
-// function buildCharts6(unemploy, covid, inflation) {
-//     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-//     var chartDom = document.getElementById('chart6');
-//     var myChart = echarts.init(chartDom);
-//     var option;
-
-//     option = {
-//     // Make gradient line here
-//     visualMap: [
-//         {
-//         show: false,
-//         type: 'continuous',
-//         seriesIndex: 0,
-//         min: 0,
-//         max: 400
-//         },
-//         {
-//         show: false,
-//         type: 'continuous',
-//         seriesIndex: 1,
-//         dimension: 0,
-//         min: 0,
-//         max: months.length - 1
-//         }
-//     ],
-//     title: [
-//         {
-//         left: 'center',
-//         text: `Monthly Covid Cases`
-//         },
-//         {
-//         top: '55%',
-//         left: 'center',
-//         text: `Monthly Inflation Rates`
-//         }
-//     ],
-//     tooltip: {
-//         trigger: 'axis'
-//     },
-//     xAxis: [
-//         {
-//         data: months
-//         },
-//         {
-//         data: months,
-//         gridIndex: 1
-//         }
-//     ],
-//     yAxis: [
-//         {},
-//         {
-//         gridIndex: 1
-//         }
-//     ],
-//     grid: [
-//         {
-//         bottom: '60%'
-//         },
-//         {
-//         top: '60%'
-//         }
-//     ],
-//     series: [
-//         {
-//         type: 'line',
-//         showSymbol: false,
-//         data: covid,
-//         areaStyle: {
-//           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-//             {
-//               offset: 0,
-//               color: 'rgb(255, 158, 68)'
-//             },
-//             {
-//               offset: 1,
-//               color: 'rgb(255, 70, 131)'
-//             }
-//           ])
-//         }
-
-//         },
-//         {
-//         type: 'line',
-//         showSymbol: false,
-//         data: inflation,
-//         xAxisIndex: 1,
-//         yAxisIndex: 1,
-//         areaStyle: {
-//           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-//             {
-//               offset: 0,
-//               color: 'rgb(255, 158, 68)'
-//             },
-//             {
-//               offset: 1,
-//               color: 'rgb(255, 70, 131)'
-//             }
-//           ])
-//         }
-//         }
-//     ]
-//     };
-
-//     option && myChart.setOption(option);
-
-// }
 
 // initilize the dropdown menus
 function init() {
@@ -1423,9 +1110,7 @@ d3.json(stateUrl).then((data) => {
     legend.onAdd = function (map) {
       var div = L.DomUtil.create("div", "info legend"),
         grades = [0, 200, 300, 400, 500, 750, 1000, 1500, 2000],
-        actualGrades = [
-          0, 200000, 300000, 400000, 500000, 750000, 1000000, 1500000, 2000000,
-        ],
+        actualGrades = [ 0, 200000, 300000, 400000, 500000, 750000, 1000000, 1500000, 2000000],
         labels = [];
 
       // Create a title for the legend
