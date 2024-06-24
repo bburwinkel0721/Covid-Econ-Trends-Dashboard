@@ -46,9 +46,16 @@ html, body {
     opacity: 0.7; }
 
 body {
-    background-color: rgb(131, 131, 132);
+    background: linear-gradient(45deg, #FF9A9E, #179bca9b, hsl(102, 65%, 42%), #FF9A9E, #FBC2EB, #A18CD1, #DB133B
+);
+    background-size: 600% 600%;
+    animation: gradientAnimation 30s ease infinite;
+    }
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
-
 .dashboard {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
