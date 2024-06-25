@@ -577,6 +577,7 @@ function buildChart2(unemploy, covid, inflation) {
             max: months.length - 1,
         },
         ],
+        // Adjust the titles of each graph
         title: [
         {
             top: "0%",
@@ -596,7 +597,31 @@ function buildChart2(unemploy, covid, inflation) {
         ],
         tooltip: {
         trigger: "axis",
-        },
+        // Needed to format the 3 graphs with different tooltips
+        formatter: function (params) {
+            let tooltipText = '';
+            params.forEach((param) => {
+                let value = param.data.toLocaleString(undefined, { maximumFractionDigits: 1 });
+                let label = '';
+                let symbol = '';
+                switch (param.seriesIndex) {
+                    case 0:
+                        label = 'Covid Cases';
+                        symbol = '';
+                        break;
+                    case 1:
+                        label = 'Inflation Rate';
+                        symbol = '%';
+                        break;
+                    case 2:
+                        label = 'Unemployment Rate';
+                        symbol = '%';
+                        break;
+                }
+                tooltipText += `${label}: ${value}${symbol}<br>`;
+            });
+            return tooltipText;
+        },},
         xAxis: [
         {
             data: months,
@@ -619,6 +644,7 @@ function buildChart2(unemploy, covid, inflation) {
             gridIndex: 2,
         },
         ],
+        // Adjust the position of the 3 graphs
         grid: [
         {
             top: "5%",
@@ -638,6 +664,7 @@ function buildChart2(unemploy, covid, inflation) {
             type: "line",
             showSymbol: false,
             data: covid,
+            // Color the area under the line
             areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -657,6 +684,7 @@ function buildChart2(unemploy, covid, inflation) {
             data: inflation,
             xAxisIndex: 1,
             yAxisIndex: 1,
+            // Color the area under the line
             areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -676,6 +704,7 @@ function buildChart2(unemploy, covid, inflation) {
             data: unemploy,
             xAxisIndex: 2,
             yAxisIndex: 2,
+            // Color the area under the line
             areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -720,7 +749,7 @@ function buildCharts3(data, state) {
         var formattedValue =
           "$" +
           adjustedValue.toLocaleString(undefined, { maximumFractionDigits: 0 });
-        var string = `${value.seriesName} ${value.name} in billions was ${formattedValue}`;
+        var string = `${value.seriesName} ${value.name} was ${formattedValue} billion`;
         return string;
       },
     },
