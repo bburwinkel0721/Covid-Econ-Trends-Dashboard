@@ -2,6 +2,7 @@
 ## Project Overview and Goal
 - The ultimate goal of this project is to create a dynamic and interactive dashboard that will allow individuals to explore relationships between historical Covid-19 and economical data for each U.S. state.
 - To accomplish this task, we extracted data from various sources, transformed that data into a more usable format, loaded it into a database with the desired structure, hosted that data using our own application programming interface, and then used that data to create a dynmaic interactive online dashboard.
+![Logo](Resources/dashboard.png)
 ## Tasks and Process
 - In order to accomplish our task, we had to first identify data sources that would meet our needs. We identified the John Hopkins Whiting school of engineering as a great source for our Covid data, the bureau of economic analysis for our GDP data, the US census bureau for our population data, US Bureau of Labor Statistics for our unemployment data, and Eric tech for our geojson data.
 - Once we had all our data sources, we piped them into our ETL jupyiter notebook for processing. We used the geojson files for state and county as our foundation for our database and then combined the other data sources into the property section of those structures.
