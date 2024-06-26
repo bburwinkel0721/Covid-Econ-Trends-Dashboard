@@ -23,19 +23,19 @@
 ## Acknowledgments and Data Sources
 - Thank you to Leaflet and Apache ECharts for their various chart tutorials. Thank you to all of the Organizers of our data sources (please see the citations below for specifics).
 - [Johns Hopkins Whiting School of Engineering Covid- 19 Github Repository](https://github.com/CSSEGISandData/COVID-19)
-    - Citation: Dong E, Du H, Gardner L. An interactive web-based dashboard to track COVID-19 in real time. Lancet Inf Dis. 20(5):533-534. doi: 10.1016/S1473-3099(20)30120-1
+    - Dong E, Du H, Gardner L. An interactive web-based dashboard to track COVID-19 in real time. Lancet Inf Dis. 20(5):533-534. doi: 10.1016/S1473-3099(20)30120-1
 - [Bureau of Economic Analysis API ](https://apps.bea.gov/API/signup/?_gl=1*1xk07q5*_ga*MTQ2MTU2MTg5My4xNzE4MjM5ODA3*_ga_J4698JNNFT*MTcxODY2OTAwOC40LjAuMTcxODY2OTAwOC42MC4wLjA.)
-    - Citation: Bureau of Economic Analysis. (2024). API signup. Retrieved June 22, 2024, from `https://apps.bea.gov/API/signup/?_gl=1*1xk07q5*_ga*MTQ2MTU2MTg5My4xNzE4MjM5ODA3*_ga_J4698JNNFT*MTcxODY2OTAwOC40LjAuMTcxODY2OTAwOC42MC4wLjA`
+    - Bureau of Economic Analysis. (2024). API signup. Retrieved June 22, 2024, from `https://apps.bea.gov/API/signup/?_gl=1*1xk07q5*_ga*MTQ2MTU2MTg5My4xNzE4MjM5ODA3*_ga_J4698JNNFT*MTcxODY2OTAwOC40LjAuMTcxODY2OTAwOC42MC4wLjA`
 - [United States Census Bureau Population Dataset](https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html)
-    - Citation: U.S. Census Bureau. (2024). National population totals and components of change: 2020-2023. Retrieved June 22, 2024, from `https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html`
+    - U.S. Census Bureau. (2024). National population totals and components of change: 2020-2023. Retrieved June 22, 2024, from `https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html`
 - [Eric Tech US States and Counties GeoJSON](https://eric.clst.org/tech/usgeojson/)
-    - Citation: Cowgill, E. (2024). US GeoJSON data. Retrieved June 22, 2024, from `https://eric.clst.org/tech/usgeojson`
+    - Cowgill, E. (2024). US GeoJSON data. Retrieved June 22, 2024, from `https://eric.clst.org/tech/usgeojson`
 - [Leaflet Choropleth](https://leafletjs.com/examples/geojson/)
     - Leaflet. (2024). Choropleth Example. Retrieved June 22, 2024, from `https://leafletjs.com/examples/choropleth`
 - [Apache ECharts Examples](https://echarts.apache.org/examples/en/index.html)
     - Apache ECharts. (2024). ECharts Examples. Retrieved June 22, 2024, from `https://echarts.apache.org/examples/en/index.html`
 - [U.S. Bureau of Labor Statistics Public API](https://www.bls.gov/developers/home.htm)
-    - Citation: U.S. Bureau of Labor Statistics. (2024). BLS developers home. Retrieved June 22, 2024, from `https://www.bls.gov/developers/home.htm`
+    - U.S. Bureau of Labor Statistics. (2024). BLS developers home. Retrieved June 22, 2024, from `https://www.bls.gov/developers/home.htm`
 - [World Bank Group GDP Data](https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?end=2022&locations=PR&start=2018)
-    - Citation: World Bank. (n.d.). GDP (current US$) - Puerto Rico. Retrieved June 22, 2024 from `https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?end=2022&locations=PR&start=2018`
+    - World Bank. (n.d.). GDP (current US$) - Puerto Rico. Retrieved June 22, 2024 from `https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?end=2022&locations=PR&start=2018`
     
